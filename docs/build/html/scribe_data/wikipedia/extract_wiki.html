@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>extract_wiki.py &mdash; Scribe-Data 3.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=18e5adab" />
+
+  
+    <link rel="shortcut icon" href="../../_static/ScribeFavicon.ico"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=3eb8911e"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="process_wiki.py" href="process_wiki.html" />
+    <link rel="prev" title="wikipedia/" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/ScribeDataLogo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Scribe-Data</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../load/index.html">load/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unicode/index.html">unicode/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../wikidata/index.html">wikidata/</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">wikipedia/</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">extract_wiki.py</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scribe_data.wikipedia.extract_wiki.download_wiki"><code class="docutils literal notranslate"><span class="pre">download_wiki()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scribe_data.wikipedia.extract_wiki._process_article"><code class="docutils literal notranslate"><span class="pre">_process_article()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scribe_data.wikipedia.extract_wiki.iterate_and_parse_file"><code class="docutils literal notranslate"><span class="pre">iterate_and_parse_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scribe_data.wikipedia.extract_wiki.parse_to_ndjson"><code class="docutils literal notranslate"><span class="pre">parse_to_ndjson()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scribe_data.wikipedia.extract_wiki.WikiXmlHandler"><code class="docutils literal notranslate"><span class="pre">WikiXmlHandler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="process_wiki.html">process_wiki.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gen_autosuggestions.html">gen_autosuggestions.ipynb</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../wiktionary/index.html">wiktionary/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html">cli/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">utils.py</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../notes.html">Contributing to Scribe-Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes.html#license">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Scribe-Data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Scribe-Data</a></li>
+          <li class="breadcrumb-item"><a href="index.html">wikipedia/</a></li>
+      <li class="breadcrumb-item active">extract_wiki.py</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/scribe_data/wikipedia/extract_wiki.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="extract-wiki-py">
+<h1>extract_wiki.py<a class="headerlink" href="#extract-wiki-py" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://github.com/scribe-org/Scribe-Data/tree/main/src/scribe_data/wikipedia/extract_wiki.py">View code on Github</a></p>
+<p id="module-scribe_data.wikipedia.extract_wiki">Module for downloading and creating workable files from Wikipedia dumps.</p>
+<!--
+* Copyright (C) 2024 Scribe
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <https://www.gnu.org/licenses/>.
+--><dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.wikipedia.extract_wiki.download_wiki">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.wikipedia.extract_wiki.</span></span><span class="sig-name descname"><span class="pre">download_wiki</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wiki_dump'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/scribe_data/wikipedia/extract_wiki.html#download_wiki"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.wikipedia.extract_wiki.download_wiki" title="Link to this definition"></a></dt>
+<dd><p>Downloads the most recent stable dump of a language’s Wikipedia if it is not already present.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>language</strong><span class="classifier">str (default=en)</span></dt><dd><p>The language of Wikipedia to download.</p>
+</dd>
+<dt><strong>target_dir</strong><span class="classifier">pathlib.Path (default=wiki_dump)</span></dt><dd><p>The directory in the pwd into which files should be downloaded.</p>
+</dd>
+<dt><strong>file_limit</strong><span class="classifier">int (default=None, all files)</span></dt><dd><p>The limit for the number of files to download.</p>
+</dd>
+<dt><strong>dump_id</strong><span class="classifier">str (default=None)</span></dt><dd><p>The id of an explicit Wikipedia dump that the user wants to download.</p>
+<p>Note: a value of None will select the third from the last (latest stable dump).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>file_info</strong><span class="classifier">list of lists</span></dt><dd><p>Information on the downloaded Wikipedia dump files.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.wikipedia.extract_wiki._process_article">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.wikipedia.extract_wiki.</span></span><span class="sig-name descname"><span class="pre">_process_article</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/scribe_data/wikipedia/extract_wiki.html#_process_article"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.wikipedia.extract_wiki._process_article" title="Link to this definition"></a></dt>
+<dd><p>Process a wikipedia article to extract the title and text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>The title of the article.</p>
+</dd>
+<dt><strong>text</strong><span class="classifier">str</span></dt><dd><p>The text to be processed.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>title, text:  string, string</dt><dd><p>The data from the article.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.wikipedia.extract_wiki.iterate_and_parse_file">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.wikipedia.extract_wiki.</span></span><span class="sig-name descname"><span class="pre">iterate_and_parse_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/scribe_data/wikipedia/extract_wiki.html#iterate_and_parse_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.wikipedia.extract_wiki.iterate_and_parse_file" title="Link to this definition"></a></dt>
+<dd><p>Creates partitions of desired articles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>args</strong><span class="classifier">tuple</span></dt><dd><p>The below arguments as a tuple for pool.imap_unordered rather than pool.starmap.</p>
+</dd>
+<dt><strong>input_path</strong><span class="classifier">pathlib.Path</span></dt><dd><p>The path to the data file.</p>
+</dd>
+<dt><strong>partitions_dir</strong><span class="classifier">pathlib.Path</span></dt><dd><p>The path to where output file should be stored.</p>
+</dd>
+<dt><strong>article_limit</strong><span class="classifier">int (default=None)</span></dt><dd><p>An optional article_limit of the number of articles to find.</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier">bool (default=True)</span></dt><dd><p>Whether to show a tqdm progress bar for the processes.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>A parsed file Wikipedia dump file with articles.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.wikipedia.extract_wiki.parse_to_ndjson">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.wikipedia.extract_wiki.</span></span><span class="sig-name descname"><span class="pre">parse_to_ndjson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'articles'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wikipedia_dump'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partitions_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'partitions'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">article_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_parsed_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multicore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/scribe_data/wikipedia/extract_wiki.html#parse_to_ndjson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.wikipedia.extract_wiki.parse_to_ndjson" title="Link to this definition"></a></dt>
+<dd><p>Finds all Wikipedia entries and converts them to json files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>output_path</strong><span class="classifier">str (default=articles)</span></dt><dd><p>The name of the final output ndjson file.</p>
+</dd>
+<dt><strong>input_dir</strong><span class="classifier">str (default=wikipedia_dump)</span></dt><dd><p>The path to the directory where the data is stored.</p>
+</dd>
+<dt><strong>partitions_dir</strong><span class="classifier">str (default=partitions)</span></dt><dd><p>The path to the directory where the output should be stored.</p>
+</dd>
+<dt><strong>article_limit</strong><span class="classifier">int (default=None)</span></dt><dd><p>An optional limit of the number of articles per dump file to find.</p>
+</dd>
+<dt><strong>delete_parsed_files</strong><span class="classifier">bool (default=False)</span></dt><dd><p>Whether to delete the separate parsed files after combining them.</p>
+</dd>
+<dt><strong>multicore</strong><span class="classifier">bool (default=True)</span></dt><dd><p>Whether to use multicore processing.</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier">bool (default=True)</span></dt><dd><p>Whether to show a tqdm progress bar for the processes.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Wikipedia dump files parsed and converted to json files.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scribe_data.wikipedia.extract_wiki.WikiXmlHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scribe_data.wikipedia.extract_wiki.</span></span><span class="sig-name descname"><span class="pre">WikiXmlHandler</span></span><a class="reference internal" href="../../_modules/scribe_data/wikipedia/extract_wiki.html#WikiXmlHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.wikipedia.extract_wiki.WikiXmlHandler" title="Link to this definition"></a></dt>
+<dd><p>Parse through XML data using SAX.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scribe_data.wikipedia.extract_wiki.WikiXmlHandler.characters">
+<span class="sig-name descname"><span class="pre">characters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/scribe_data/wikipedia/extract_wiki.html#WikiXmlHandler.characters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.wikipedia.extract_wiki.WikiXmlHandler.characters" title="Link to this definition"></a></dt>
+<dd><p>Characters between opening and closing tags.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scribe_data.wikipedia.extract_wiki.WikiXmlHandler.startElement">
+<span class="sig-name descname"><span class="pre">startElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/scribe_data/wikipedia/extract_wiki.html#WikiXmlHandler.startElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.wikipedia.extract_wiki.WikiXmlHandler.startElement" title="Link to this definition"></a></dt>
+<dd><p>Opening tag of element.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scribe_data.wikipedia.extract_wiki.WikiXmlHandler.endElement">
+<span class="sig-name descname"><span class="pre">endElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/scribe_data/wikipedia/extract_wiki.html#WikiXmlHandler.endElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.wikipedia.extract_wiki.WikiXmlHandler.endElement" title="Link to this definition"></a></dt>
+<dd><p>Closing tag of element.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="wikipedia/" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="process_wiki.html" class="btn btn-neutral float-right" title="process_wiki.py" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Scribe-Data developers (GPL 3.0 License).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

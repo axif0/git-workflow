@@ -1,0 +1,1211 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contributing to Scribe-Data &mdash; Scribe-Data 3.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=18e5adab" />
+
+  
+    <link rel="shortcut icon" href="_static/ScribeFavicon.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=3eb8911e"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="utils.py" href="scribe_data/utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/ScribeDataLogo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="scribe_data/index.html">Scribe-Data</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to Scribe-Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#first-steps-as-a-contributor">First steps as a contributor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#learning-the-tech-stack">Learning the tech stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-environment">Development environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#issues-and-projects">Issues and projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bug-reports">Bug reports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-requests">Feature requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pull-requests">Pull requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-edits">Data edits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#license">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Scribe-Data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Contributing to Scribe-Data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/notes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="contributing-to-scribe-data">
+<h1>Contributing to Scribe-Data<a class="headerlink" href="#contributing-to-scribe-data" title="Link to this heading"></a></h1>
+<p>Thank you for your interest in contributing!</p>
+<p>Please take a moment to review this document to make the contribution process is easy and effective for everyone involved.</p>
+<p>Following these guidelines helps to communicate that you respect the time of the developers managing and developing this open-source project. In return, and accordance with this project’s <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/blob/main/.github/CODE_OF_CONDUCT.md">code of conduct</a>, other contributors will reciprocate that respect in addressing your issue or assessing changes and features.</p>
+<p>If you have questions or would like to communicate with the team, please <a class="reference external" href="https://matrix.to/#/#scribe_community:matrix.org">join us in our public Matrix chat
+rooms</a>. We’d be happy to hear from you!</p>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="#first-steps-as-a-contributor">First steps as a contributor</a></p></li>
+<li><p><a class="reference external" href="#learning-the-tech-stack">Learning the tech stack</a></p></li>
+<li><p><a class="reference external" href="#development-environment">Development environment</a></p></li>
+<li><p><a class="reference external" href="#issues-and-projects">Issues and projects</a></p></li>
+<li><p><a class="reference external" href="#bug-reports">Bug reports</a></p></li>
+<li><p><a class="reference external" href="#feature-requests">Feature requests</a></p></li>
+<li><p><a class="reference external" href="#pull-requests">Pull requests</a></p></li>
+<li><p><a class="reference external" href="#data-edits">Data edits</a></p></li>
+<li><p><a class="reference external" href="#documentation">Documentation</a></p></li>
+</ul>
+</section>
+<section id="first-steps-as-a-contributor">
+<h2>First steps as a contributor<a class="headerlink" href="#first-steps-as-a-contributor" title="Link to this heading"></a></h2>
+<p>Thank you for your interest in contributing to Scribe-Data! We look
+forward to welcoming you to the community and working with you to build
+a tool for language learners to communicate effectively. :) The
+following are some suggested steps for people interested in joining our
+community:</p>
+<ul>
+<li><p>Please join the <a class="reference external" href="https://matrix.to/#/#scribe_community:matrix.org">public Matrix chat</a> to connect with the community</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://matrix.org/">Matrix</a> is a network for secure, decentralized communication</p></li>
+<li><p>Scribe would suggest that you use the <a class="reference external" href="https://element.io/">Element</a> client</p></li>
+<li><p>The <a class="reference external" href="https://matrix.to/#/!yQJjLmluvlkWttNhKo:matrix.org?via=matrix.org">General</a> and <a class="reference external" href="https://matrix.to/#/#ScribeData:matrix.org">Data</a> channels would be great places to start!</p></li>
+<li><p>Feel free to introduce yourself and tell us what your interests are if you’re comfortable :)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Read through this contributing guide for all the information you need to contribute</p></li>
+<li><p>Look into issues marked <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22">good first issue</a> and the <a class="reference external" href="https://github.com/orgs/scribe-org/projects/1">Projects board</a> to get a a better understanding of what you can work on</p></li>
+<li><p>Check out our <a class="reference external" href="https://www.figma.com/file/c8945w2iyoPYVhsqW7vRn6/scribe_public_designs?type=design&amp;node-id=405-464&amp;mode=design&amp;t=E3ccS9Z8MDVSizQ4-0">public designs on Figma</a> to understand Scribes’ goals and direction</p></li>
+<li><p>Consider joining our <a class="reference external" href="https://etherpad.wikimedia.org/p/scribe-dev-sync">bi-weekly developer sync</a>!</p></li>
+</ul>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><strong>Note</strong></div>
+<div class="line">Those new to Python or wanting to work on their Python skills are more than welcome to contribute! The team would be happy to help you on your development journey :)</div>
+</div>
+</div></blockquote>
+</section>
+<section id="learning-the-tech-stack">
+<h2>Learning the tech stack<a class="headerlink" href="#learning-the-tech-stack" title="Link to this heading"></a></h2>
+<p>Scribe is very open to contributions from people in the early stages of their coding journey! The following is a select list of documentation pages to help you understand the technologies we use.</p>
+<details><summary>Docs for those new to programming</summary><p><ul>
+<li><p><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Learn">Mozilla Developer Network Learning Area</a></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Doing MDN sections for HTML, CSS, and JavaScript is the best ways to get into web development!</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</p></details><details><summary>Python learning docs</summary><p><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/tutorial/introduction.html">Python getting started guide</a></p></li>
+<li><p><a class="reference external" href="https://www.python.org/about/gettingstarted/">Python getting started resources</a></p></li>
+</ul>
+</p></details><br/></section>
+<section id="development-environment">
+<h2>Development environment<a class="headerlink" href="#development-environment" title="Link to this heading"></a></h2>
+<p>The development environment for Scribe-Data can be installed via the following steps:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.github.com/en/get-started/quickstart/fork-a-repo">Fork</a> the <a class="reference external" href="https://github.com/scribe-org/Scribe-Data">Scribe-Data repo</a>, clone your fork, and configure the remotes:</p></li>
+</ul>
+<details><summary>Note: Consider using SSH</summary><p><p>Alternatively, to use HTTPS as in the instructions below, consider SSH to interact with GitHub from the terminal. SSH allows you to connect without a user-pass authentication flow.</p>
+<p>To run git commands with SSH, remember then to substitute the HTTPS URL, <code class="docutils literal notranslate"><span class="pre">https://github.com/...</span></code>, with the SSH one, <code class="docutils literal notranslate"><span class="pre">git&#64;github.com:...</span></code>.</p>
+<ul class="simple">
+<li><p>e.g. Cloning now becomes <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:&lt;your-username&gt;/Scribe-Data.git</span></code></p></li>
+</ul>
+<p>GitHub also has documentation on how to <a class="reference external" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent">Generate a new SSH key</a> 🔑</p>
+</p></details><br/><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone your fork of the repo into the current directory.</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/&lt;your-username&gt;/Scribe-Data.git
+<span class="c1"># Navigate to the newly cloned directory.</span>
+<span class="nb">cd</span><span class="w"> </span>Scribe-Data
+<span class="c1"># Assign the original repo to a remote called &quot;upstream&quot;.</span>
+git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>upstream<span class="w"> </span>https://github.com/scribe-org/Scibe-Data.git
+</pre></div>
+</div>
+<ul>
+<li><p>Now, if you run <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">remote</span> <span class="pre">-v</span></code> you should see two remote repositories named:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">origin</span></code> (forked repository)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">upstream</span></code> (Scribe-Data repository)</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<ul class="simple">
+<li><p>Use <a class="reference external" href="https://docs.python.org/3/library/venv.html">Python venv</a> to create the local development environment within your Scribe-Data directory:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv<span class="w">  </span><span class="c1"># make an environment venv</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w">  </span><span class="c1"># make sure that pip is at the latest version</span>
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt<span class="w">  </span><span class="c1"># install dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="w">  </span><span class="c1"># install the local version of Scribe-Data</span>
+</pre></div>
+</div>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><strong>Note</strong></div>
+<div class="line">Feel free to contact the team in the <a class="reference external" href="https://matrix.to/#/#ScribeData:matrix.org">Data room on Matrix</a> if you’re having problems getting your environment set up!</div>
+</div>
+</div></blockquote>
+</section>
+<section id="issues-and-projects">
+<h2>Issues and projects<a class="headerlink" href="#issues-and-projects" title="Link to this heading"></a></h2>
+<p>The <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues">issue tracker for Scribe-Data</a> is the
+preferred channel for <a class="reference external" href="#bug-reports">bug reports</a>, <a class="reference external" href="#feature-requests">features requests</a> and <a class="reference external" href="#pull-requests">submitting pull
+requests</a>. Scribe also organizes related issues into <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/projects">projects</a>.</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><strong>Note</strong></div>
+<div class="line">Just because an issue is assigned on GitHub doesn’t mean that the team isn’t interested in your contribution! Feel free to write <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues">in the issues</a> and we can potentially reassign it to you.</div>
+</div>
+</div></blockquote>
+<p>Be sure to check the <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/labels/-next%20release-">-next release-</a>
+and <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/labels/-priority-">-priority-</a>
+labels in the <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues">issues</a> for those
+that are most important, as well as those marked <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">good first issue</a> that are tailored for first-time contributors.</p>
+</section>
+<section id="bug-reports">
+<h2>Bug reports<a class="headerlink" href="#bug-reports" title="Link to this heading"></a></h2>
+<p>A bug is a <em>demonstrable problem</em> that is caused by the code in the repository. Good bug reports are extremely helpful - thank you!</p>
+<p>Guidelines for bug reports:</p>
+<ol class="arabic simple">
+<li><p><strong>Use the GitHub issue search</strong> to check if the issue has already been reported.</p></li>
+<li><p><strong>Check if the issue has been fixed</strong> by trying to reproduce it using the latest <code class="docutils literal notranslate"><span class="pre">main</span></code> or development branch in the repository.</p></li>
+<li><p><strong>Isolate the problem</strong> to make sure that the code in the repository is <em>definitely</em> responsible for the issue.</p></li>
+</ol>
+<p><strong>Great Bug Reports</strong> tend to have:</p>
+<ul class="simple">
+<li><p>A quick summary</p></li>
+<li><p>Steps to reproduce</p></li>
+<li><p>What you expected would happen</p></li>
+<li><p>What actually happens</p></li>
+<li><p>Notes (why this might be happening, things tried that didn’t work, etc)</p></li>
+</ul>
+<p>To make the above steps easier, the Scribe team asks that contributors report bugs using the <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/new?assignees=&amp;labels=feature&amp;template=bug_report.yml">bug report
+template</a>, with these issues further being marked with the <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues?q=is%3Aopen+is%3Aissue+label%3Abug">bug</a> label.</p>
+<p>Again, thank you for your time in reporting issues!</p>
+</section>
+<section id="feature-requests">
+<h2>Feature requests<a class="headerlink" href="#feature-requests" title="Link to this heading"></a></h2>
+<p>Feature requests are more than welcome! Please take a moment to find out whether your idea fits with the scope and aims of the project. When making a suggestion, provide as much detail and context as possible, and further, make clear the degree to which you would like to contribute in its development. Feature requests are marked with the
+<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues?q=is%3Aopen+is%3Aissue+label%3Afeature">feature</a> label, and can be made using the <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/new?assignees=&amp;labels=feature&amp;template=feature_request.yml">feature request</a> template.</p>
+</section>
+<section id="pull-requests">
+<h2>Pull requests<a class="headerlink" href="#pull-requests" title="Link to this heading"></a></h2>
+<p>Good pull requests - patches, improvements and new features - are the foundation of our community making Scribe-Data. They should remain focused in scope and avoid containing unrelated commits. Note that all contributions to this project will be made under <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/blob/main/LICENSE.txt">the specified license</a> and should follow the coding indentation and style standards (<a class="reference external" href="https://matrix.to/#/#scribe_community:matrix.org">contact us</a> if unsure).</p>
+<p><strong>Please ask first</strong> before embarking on any significant pull request (implementing features, refactoring code, etc), otherwise, you risk spending a lot of time working on something that the developers might not want to merge into the project. With that being said, major additions are very appreciated!</p>
+<p>When making a contribution, adhering to the <a class="reference external" href="https://guides.github.com/introduction/flow/index.html">GitHub flow</a> process is the best way to get your work merged:</p>
+<ol class="arabic simple">
+<li><p>If you cloned a while ago, get the latest changes from upstream:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>&lt;dev-branch&gt;
+git<span class="w"> </span>pull<span class="w"> </span>upstream<span class="w"> </span>&lt;dev-branch&gt;
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Create a new topic branch (off the main project development branch) to contain your feature, change, or fix:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>&lt;topic-branch-name&gt;
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Commit your changes in logical chunks, and please try to adhere to <a class="reference external" href="https://www.conventionalcommits.org/en/v1.0.0/">Conventional Commits</a>.</p></li>
+</ol>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><strong>Note</strong></div>
+<div class="line">The following are tools and methods to help you write good commit messages ✨</div>
+<div class="line">•  <a class="reference external" href="https://commitlint.io/">commitlint</a> helps write <a class="reference external" href="https://www.conventionalcommits.org/en/v1.0.0/">Conventional Commits</a></div>
+<div class="line">•  Git’s <a class="reference external" href="https://docs.github.com/en/github/getting-started-with-github/about-git-rebase">interactive rebase</a> cleans up commits</div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Locally merge (or rebase) the upstream development branch into your topic branch:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>pull<span class="w"> </span>--rebase<span class="w"> </span>upstream<span class="w"> </span>&lt;dev-branch&gt;
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Push your topic branch up to your fork:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>&lt;topic-branch-name&gt;
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p><a class="reference external" href="https://help.github.com/articles/using-pull-requests/">Open a Pull Request</a> with a clear title and description.</p></li>
+</ol>
+<p>Thank you in advance for your contributions!</p>
+</section>
+<section id="data-edits">
+<h2>Data edits<a class="headerlink" href="#data-edits" title="Link to this heading"></a></h2>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><strong>Note</strong></div>
+<div class="line">Please see the <a class="reference external" href="https://github.com/scribe-org/Organization/blob/main/WIKIDATAGUIDE.md">Wikidata and Scribe Guide</a> for an overview of <a class="reference external" href="https://www.wikidata.org/">Wikidata</a> and how Scribe uses it.</div>
+</div>
+</div></blockquote>
+<p>Scribe does not accept direct edits to the grammar JSON files as they are sourced from <a class="reference external" href="https://www.wikidata.org/">Wikidata</a>. Edits can be discussed and the <a class="reference external" href="https://github.com/scribe-org/Scribe-Data">Scribe-Data</a> queries will be changed and run before an update. If there is a problem with one of the files, then the fix should be made on <a class="reference external" href="https://www.wikidata.org/">Wikidata</a> and not on Scribe. Feel free to let us know that edits have been made by <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues">opening an issue</a> and we’ll be happy to integrate them!</p>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h2>
+<p>The documentation for Scribe-Data can be found at <a class="reference external" href="https://scribe-data.readthedocs.io/en/latest/">scribe-data.readthedocs.io</a>. Documentation is an invaluable way to contribute to coding projects as it allows others to more easily understand the project structure and contribute. Issues related to documentation are marked with the <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/labels/documentation">documentation</a> label.</p>
+<p>Use the following commands to build the documentation locally:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
+make<span class="w"> </span>html
+</pre></div>
+</div>
+<p>You can then open <code class="docutils literal notranslate"><span class="pre">index.html</span></code> within <code class="docutils literal notranslate"><span class="pre">docs/build/html</span></code> to check the
+local version of the documentation.</p>
+</section>
+</section>
+<section id="license">
+<h1>License<a class="headerlink" href="#license" title="Link to this heading"></a></h1>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+ Copyright (C) 2007 Free Software Foundation, Inc. &lt;http://fsf.org/&gt;
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+
+                            Preamble
+
+  The GNU General Public License is a free, copyleft license for
+software and other kinds of works.
+
+  The licenses for most software and other practical works are designed
+to take away your freedom to share and change the works.  By contrast,
+the GNU General Public License is intended to guarantee your freedom to
+share and change all versions of a program--to make sure it remains free
+software for all its users.  We, the Free Software Foundation, use the
+GNU General Public License for most of our software; it applies also to
+any other work released this way by its authors.  You can apply it to
+your programs, too.
+
+  When we speak of free software, we are referring to freedom, not
+price.  Our General Public Licenses are designed to make sure that you
+have the freedom to distribute copies of free software (and charge for
+them if you wish), that you receive source code or can get it if you
+want it, that you can change the software or use pieces of it in new
+free programs, and that you know you can do these things.
+
+  To protect your rights, we need to prevent others from denying you
+these rights or asking you to surrender the rights.  Therefore, you have
+certain responsibilities if you distribute copies of the software, or if
+you modify it: responsibilities to respect the freedom of others.
+
+  For example, if you distribute copies of such a program, whether
+gratis or for a fee, you must pass on to the recipients the same
+freedoms that you received.  You must make sure that they, too, receive
+or can get the source code.  And you must show them these terms so they
+know their rights.
+
+  Developers that use the GNU GPL protect your rights with two steps:
+(1) assert copyright on the software, and (2) offer you this License
+giving you legal permission to copy, distribute and/or modify it.
+
+  For the developers&#39; and authors&#39; protection, the GPL clearly explains
+that there is no warranty for this free software.  For both users&#39; and
+authors&#39; sake, the GPL requires that modified versions be marked as
+changed, so that their problems will not be attributed erroneously to
+authors of previous versions.
+
+  Some devices are designed to deny users access to install or run
+modified versions of the software inside them, although the manufacturer
+can do so.  This is fundamentally incompatible with the aim of
+protecting users&#39; freedom to change the software.  The systematic
+pattern of such abuse occurs in the area of products for individuals to
+use, which is precisely where it is most unacceptable.  Therefore, we
+have designed this version of the GPL to prohibit the practice for those
+products.  If such problems arise substantially in other domains, we
+stand ready to extend this provision to those domains in future versions
+of the GPL, as needed to protect the freedom of users.
+
+  Finally, every program is threatened constantly by software patents.
+States should not allow patents to restrict development and use of
+software on general-purpose computers, but in those that do, we wish to
+avoid the special danger that patents applied to a free program could
+make it effectively proprietary.  To prevent this, the GPL assures that
+patents cannot be used to render the program non-free.
+
+  The precise terms and conditions for copying, distribution and
+modification follow.
+
+                       TERMS AND CONDITIONS
+
+  0. Definitions.
+
+  &quot;This License&quot; refers to version 3 of the GNU General Public License.
+
+  &quot;Copyright&quot; also means copyright-like laws that apply to other kinds of
+works, such as semiconductor masks.
+
+  &quot;The Program&quot; refers to any copyrightable work licensed under this
+License.  Each licensee is addressed as &quot;you&quot;.  &quot;Licensees&quot; and
+&quot;recipients&quot; may be individuals or organizations.
+
+  To &quot;modify&quot; a work means to copy from or adapt all or part of the work
+in a fashion requiring copyright permission, other than the making of an
+exact copy.  The resulting work is called a &quot;modified version&quot; of the
+earlier work or a work &quot;based on&quot; the earlier work.
+
+  A &quot;covered work&quot; means either the unmodified Program or a work based
+on the Program.
+
+  To &quot;propagate&quot; a work means to do anything with it that, without
+permission, would make you directly or secondarily liable for
+infringement under applicable copyright law, except executing it on a
+computer or modifying a private copy.  Propagation includes copying,
+distribution (with or without modification), making available to the
+public, and in some countries other activities as well.
+
+  To &quot;convey&quot; a work means any kind of propagation that enables other
+parties to make or receive copies.  Mere interaction with a user through
+a computer network, with no transfer of a copy, is not conveying.
+
+  An interactive user interface displays &quot;Appropriate Legal Notices&quot;
+to the extent that it includes a convenient and prominently visible
+feature that (1) displays an appropriate copyright notice, and (2)
+tells the user that there is no warranty for the work (except to the
+extent that warranties are provided), that licensees may convey the
+work under this License, and how to view a copy of this License.  If
+the interface presents a list of user commands or options, such as a
+menu, a prominent item in the list meets this criterion.
+
+  1. Source Code.
+
+  The &quot;source code&quot; for a work means the preferred form of the work
+for making modifications to it.  &quot;Object code&quot; means any non-source
+form of a work.
+
+  A &quot;Standard Interface&quot; means an interface that either is an official
+standard defined by a recognized standards body, or, in the case of
+interfaces specified for a particular programming language, one that
+is widely used among developers working in that language.
+
+  The &quot;System Libraries&quot; of an executable work include anything, other
+than the work as a whole, that (a) is included in the normal form of
+packaging a Major Component, but which is not part of that Major
+Component, and (b) serves only to enable use of the work with that
+Major Component, or to implement a Standard Interface for which an
+implementation is available to the public in source code form.  A
+&quot;Major Component&quot;, in this context, means a major essential component
+(kernel, window system, and so on) of the specific operating system
+(if any) on which the executable work runs, or a compiler used to
+produce the work, or an object code interpreter used to run it.
+
+  The &quot;Corresponding Source&quot; for a work in object code form means all
+the source code needed to generate, install, and (for an executable
+work) run the object code and to modify the work, including scripts to
+control those activities.  However, it does not include the work&#39;s
+System Libraries, or general-purpose tools or generally available free
+programs which are used unmodified in performing those activities but
+which are not part of the work.  For example, Corresponding Source
+includes interface definition files associated with source files for
+the work, and the source code for shared libraries and dynamically
+linked subprograms that the work is specifically designed to require,
+such as by intimate data communication or control flow between those
+subprograms and other parts of the work.
+
+  The Corresponding Source need not include anything that users
+can regenerate automatically from other parts of the Corresponding
+Source.
+
+  The Corresponding Source for a work in source code form is that
+same work.
+
+  2. Basic Permissions.
+
+  All rights granted under this License are granted for the term of
+copyright on the Program, and are irrevocable provided the stated
+conditions are met.  This License explicitly affirms your unlimited
+permission to run the unmodified Program.  The output from running a
+covered work is covered by this License only if the output, given its
+content, constitutes a covered work.  This License acknowledges your
+rights of fair use or other equivalent, as provided by copyright law.
+
+  You may make, run and propagate covered works that you do not
+convey, without conditions so long as your license otherwise remains
+in force.  You may convey covered works to others for the sole purpose
+of having them make modifications exclusively for you, or provide you
+with facilities for running those works, provided that you comply with
+the terms of this License in conveying all material for which you do
+not control copyright.  Those thus making or running the covered works
+for you must do so exclusively on your behalf, under your direction
+and control, on terms that prohibit them from making any copies of
+your copyrighted material outside their relationship with you.
+
+  Conveying under any other circumstances is permitted solely under
+the conditions stated below.  Sublicensing is not allowed; section 10
+makes it unnecessary.
+
+  3. Protecting Users&#39; Legal Rights From Anti-Circumvention Law.
+
+  No covered work shall be deemed part of an effective technological
+measure under any applicable law fulfilling obligations under article
+11 of the WIPO copyright treaty adopted on 20 December 1996, or
+similar laws prohibiting or restricting circumvention of such
+measures.
+
+  When you convey a covered work, you waive any legal power to forbid
+circumvention of technological measures to the extent such circumvention
+is effected by exercising rights under this License with respect to
+the covered work, and you disclaim any intention to limit operation or
+modification of the work as a means of enforcing, against the work&#39;s
+users, your or third parties&#39; legal rights to forbid circumvention of
+technological measures.
+
+  4. Conveying Verbatim Copies.
+
+  You may convey verbatim copies of the Program&#39;s source code as you
+receive it, in any medium, provided that you conspicuously and
+appropriately publish on each copy an appropriate copyright notice;
+keep intact all notices stating that this License and any
+non-permissive terms added in accord with section 7 apply to the code;
+keep intact all notices of the absence of any warranty; and give all
+recipients a copy of this License along with the Program.
+
+  You may charge any price or no price for each copy that you convey,
+and you may offer support or warranty protection for a fee.
+
+  5. Conveying Modified Source Versions.
+
+  You may convey a work based on the Program, or the modifications to
+produce it from the Program, in the form of source code under the
+terms of section 4, provided that you also meet all of these conditions:
+
+    a) The work must carry prominent notices stating that you modified
+    it, and giving a relevant date.
+
+    b) The work must carry prominent notices stating that it is
+    released under this License and any conditions added under section
+    7.  This requirement modifies the requirement in section 4 to
+    &quot;keep intact all notices&quot;.
+
+    c) You must license the entire work, as a whole, under this
+    License to anyone who comes into possession of a copy.  This
+    License will therefore apply, along with any applicable section 7
+    additional terms, to the whole of the work, and all its parts,
+    regardless of how they are packaged.  This License gives no
+    permission to license the work in any other way, but it does not
+    invalidate such permission if you have separately received it.
+
+    d) If the work has interactive user interfaces, each must display
+    Appropriate Legal Notices; however, if the Program has interactive
+    interfaces that do not display Appropriate Legal Notices, your
+    work need not make them do so.
+
+  A compilation of a covered work with other separate and independent
+works, which are not by their nature extensions of the covered work,
+and which are not combined with it such as to form a larger program,
+in or on a volume of a storage or distribution medium, is called an
+&quot;aggregate&quot; if the compilation and its resulting copyright are not
+used to limit the access or legal rights of the compilation&#39;s users
+beyond what the individual works permit.  Inclusion of a covered work
+in an aggregate does not cause this License to apply to the other
+parts of the aggregate.
+
+  6. Conveying Non-Source Forms.
+
+  You may convey a covered work in object code form under the terms
+of sections 4 and 5, provided that you also convey the
+machine-readable Corresponding Source under the terms of this License,
+in one of these ways:
+
+    a) Convey the object code in, or embodied in, a physical product
+    (including a physical distribution medium), accompanied by the
+    Corresponding Source fixed on a durable physical medium
+    customarily used for software interchange.
+
+    b) Convey the object code in, or embodied in, a physical product
+    (including a physical distribution medium), accompanied by a
+    written offer, valid for at least three years and valid for as
+    long as you offer spare parts or customer support for that product
+    model, to give anyone who possesses the object code either (1) a
+    copy of the Corresponding Source for all the software in the
+    product that is covered by this License, on a durable physical
+    medium customarily used for software interchange, for a price no
+    more than your reasonable cost of physically performing this
+    conveying of source, or (2) access to copy the
+    Corresponding Source from a network server at no charge.
+
+    c) Convey individual copies of the object code with a copy of the
+    written offer to provide the Corresponding Source.  This
+    alternative is allowed only occasionally and noncommercially, and
+    only if you received the object code with such an offer, in accord
+    with subsection 6b.
+
+    d) Convey the object code by offering access from a designated
+    place (gratis or for a charge), and offer equivalent access to the
+    Corresponding Source in the same way through the same place at no
+    further charge.  You need not require recipients to copy the
+    Corresponding Source along with the object code.  If the place to
+    copy the object code is a network server, the Corresponding Source
+    may be on a different server (operated by you or a third party)
+    that supports equivalent copying facilities, provided you maintain
+    clear directions next to the object code saying where to find the
+    Corresponding Source.  Regardless of what server hosts the
+    Corresponding Source, you remain obligated to ensure that it is
+    available for as long as needed to satisfy these requirements.
+
+    e) Convey the object code using peer-to-peer transmission, provided
+    you inform other peers where the object code and Corresponding
+    Source of the work are being offered to the general public at no
+    charge under subsection 6d.
+
+  A separable portion of the object code, whose source code is excluded
+from the Corresponding Source as a System Library, need not be
+included in conveying the object code work.
+
+  A &quot;User Product&quot; is either (1) a &quot;consumer product&quot;, which means any
+tangible personal property which is normally used for personal, family,
+or household purposes, or (2) anything designed or sold for incorporation
+into a dwelling.  In determining whether a product is a consumer product,
+doubtful cases shall be resolved in favor of coverage.  For a particular
+product received by a particular user, &quot;normally used&quot; refers to a
+typical or common use of that class of product, regardless of the status
+of the particular user or of the way in which the particular user
+actually uses, or expects or is expected to use, the product.  A product
+is a consumer product regardless of whether the product has substantial
+commercial, industrial or non-consumer uses, unless such uses represent
+the only significant mode of use of the product.
+
+  &quot;Installation Information&quot; for a User Product means any methods,
+procedures, authorization keys, or other information required to install
+and execute modified versions of a covered work in that User Product from
+a modified version of its Corresponding Source.  The information must
+suffice to ensure that the continued functioning of the modified object
+code is in no case prevented or interfered with solely because
+modification has been made.
+
+  If you convey an object code work under this section in, or with, or
+specifically for use in, a User Product, and the conveying occurs as
+part of a transaction in which the right of possession and use of the
+User Product is transferred to the recipient in perpetuity or for a
+fixed term (regardless of how the transaction is characterized), the
+Corresponding Source conveyed under this section must be accompanied
+by the Installation Information.  But this requirement does not apply
+if neither you nor any third party retains the ability to install
+modified object code on the User Product (for example, the work has
+been installed in ROM).
+
+  The requirement to provide Installation Information does not include a
+requirement to continue to provide support service, warranty, or updates
+for a work that has been modified or installed by the recipient, or for
+the User Product in which it has been modified or installed.  Access to a
+network may be denied when the modification itself materially and
+adversely affects the operation of the network or violates the rules and
+protocols for communication across the network.
+
+  Corresponding Source conveyed, and Installation Information provided,
+in accord with this section must be in a format that is publicly
+documented (and with an implementation available to the public in
+source code form), and must require no special password or key for
+unpacking, reading or copying.
+
+  7. Additional Terms.
+
+  &quot;Additional permissions&quot; are terms that supplement the terms of this
+License by making exceptions from one or more of its conditions.
+Additional permissions that are applicable to the entire Program shall
+be treated as though they were included in this License, to the extent
+that they are valid under applicable law.  If additional permissions
+apply only to part of the Program, that part may be used separately
+under those permissions, but the entire Program remains governed by
+this License without regard to the additional permissions.
+
+  When you convey a copy of a covered work, you may at your option
+remove any additional permissions from that copy, or from any part of
+it.  (Additional permissions may be written to require their own
+removal in certain cases when you modify the work.)  You may place
+additional permissions on material, added by you to a covered work,
+for which you have or can give appropriate copyright permission.
+
+  Notwithstanding any other provision of this License, for material you
+add to a covered work, you may (if authorized by the copyright holders of
+that material) supplement the terms of this License with terms:
+
+    a) Disclaiming warranty or limiting liability differently from the
+    terms of sections 15 and 16 of this License; or
+
+    b) Requiring preservation of specified reasonable legal notices or
+    author attributions in that material or in the Appropriate Legal
+    Notices displayed by works containing it; or
+
+    c) Prohibiting misrepresentation of the origin of that material, or
+    requiring that modified versions of such material be marked in
+    reasonable ways as different from the original version; or
+
+    d) Limiting the use for publicity purposes of names of licensors or
+    authors of the material; or
+
+    e) Declining to grant rights under trademark law for use of some
+    trade names, trademarks, or service marks; or
+
+    f) Requiring indemnification of licensors and authors of that
+    material by anyone who conveys the material (or modified versions of
+    it) with contractual assumptions of liability to the recipient, for
+    any liability that these contractual assumptions directly impose on
+    those licensors and authors.
+
+  All other non-permissive additional terms are considered &quot;further
+restrictions&quot; within the meaning of section 10.  If the Program as you
+received it, or any part of it, contains a notice stating that it is
+governed by this License along with a term that is a further
+restriction, you may remove that term.  If a license document contains
+a further restriction but permits relicensing or conveying under this
+License, you may add to a covered work material governed by the terms
+of that license document, provided that the further restriction does
+not survive such relicensing or conveying.
+
+  If you add terms to a covered work in accord with this section, you
+must place, in the relevant source files, a statement of the
+additional terms that apply to those files, or a notice indicating
+where to find the applicable terms.
+
+  Additional terms, permissive or non-permissive, may be stated in the
+form of a separately written license, or stated as exceptions;
+the above requirements apply either way.
+
+  8. Termination.
+
+  You may not propagate or modify a covered work except as expressly
+provided under this License.  Any attempt otherwise to propagate or
+modify it is void, and will automatically terminate your rights under
+this License (including any patent licenses granted under the third
+paragraph of section 11).
+
+  However, if you cease all violation of this License, then your
+license from a particular copyright holder is reinstated (a)
+provisionally, unless and until the copyright holder explicitly and
+finally terminates your license, and (b) permanently, if the copyright
+holder fails to notify you of the violation by some reasonable means
+prior to 60 days after the cessation.
+
+  Moreover, your license from a particular copyright holder is
+reinstated permanently if the copyright holder notifies you of the
+violation by some reasonable means, this is the first time you have
+received notice of violation of this License (for any work) from that
+copyright holder, and you cure the violation prior to 30 days after
+your receipt of the notice.
+
+  Termination of your rights under this section does not terminate the
+licenses of parties who have received copies or rights from you under
+this License.  If your rights have been terminated and not permanently
+reinstated, you do not qualify to receive new licenses for the same
+material under section 10.
+
+  9. Acceptance Not Required for Having Copies.
+
+  You are not required to accept this License in order to receive or
+run a copy of the Program.  Ancillary propagation of a covered work
+occurring solely as a consequence of using peer-to-peer transmission
+to receive a copy likewise does not require acceptance.  However,
+nothing other than this License grants you permission to propagate or
+modify any covered work.  These actions infringe copyright if you do
+not accept this License.  Therefore, by modifying or propagating a
+covered work, you indicate your acceptance of this License to do so.
+
+  10. Automatic Licensing of Downstream Recipients.
+
+  Each time you convey a covered work, the recipient automatically
+receives a license from the original licensors, to run, modify and
+propagate that work, subject to this License.  You are not responsible
+for enforcing compliance by third parties with this License.
+
+  An &quot;entity transaction&quot; is a transaction transferring control of an
+organization, or substantially all assets of one, or subdividing an
+organization, or merging organizations.  If propagation of a covered
+work results from an entity transaction, each party to that
+transaction who receives a copy of the work also receives whatever
+licenses to the work the party&#39;s predecessor in interest had or could
+give under the previous paragraph, plus a right to possession of the
+Corresponding Source of the work from the predecessor in interest, if
+the predecessor has it or can get it with reasonable efforts.
+
+  You may not impose any further restrictions on the exercise of the
+rights granted or affirmed under this License.  For example, you may
+not impose a license fee, royalty, or other charge for exercise of
+rights granted under this License, and you may not initiate litigation
+(including a cross-claim or counterclaim in a lawsuit) alleging that
+any patent claim is infringed by making, using, selling, offering for
+sale, or importing the Program or any portion of it.
+
+  11. Patents.
+
+  A &quot;contributor&quot; is a copyright holder who authorizes use under this
+License of the Program or a work on which the Program is based.  The
+work thus licensed is called the contributor&#39;s &quot;contributor version&quot;.
+
+  A contributor&#39;s &quot;essential patent claims&quot; are all patent claims
+owned or controlled by the contributor, whether already acquired or
+hereafter acquired, that would be infringed by some manner, permitted
+by this License, of making, using, or selling its contributor version,
+but do not include claims that would be infringed only as a
+consequence of further modification of the contributor version.  For
+purposes of this definition, &quot;control&quot; includes the right to grant
+patent sublicenses in a manner consistent with the requirements of
+this License.
+
+  Each contributor grants you a non-exclusive, worldwide, royalty-free
+patent license under the contributor&#39;s essential patent claims, to
+make, use, sell, offer for sale, import and otherwise run, modify and
+propagate the contents of its contributor version.
+
+  In the following three paragraphs, a &quot;patent license&quot; is any express
+agreement or commitment, however denominated, not to enforce a patent
+(such as an express permission to practice a patent or covenant not to
+sue for patent infringement).  To &quot;grant&quot; such a patent license to a
+party means to make such an agreement or commitment not to enforce a
+patent against the party.
+
+  If you convey a covered work, knowingly relying on a patent license,
+and the Corresponding Source of the work is not available for anyone
+to copy, free of charge and under the terms of this License, through a
+publicly available network server or other readily accessible means,
+then you must either (1) cause the Corresponding Source to be so
+available, or (2) arrange to deprive yourself of the benefit of the
+patent license for this particular work, or (3) arrange, in a manner
+consistent with the requirements of this License, to extend the patent
+license to downstream recipients.  &quot;Knowingly relying&quot; means you have
+actual knowledge that, but for the patent license, your conveying the
+covered work in a country, or your recipient&#39;s use of the covered work
+in a country, would infringe one or more identifiable patents in that
+country that you have reason to believe are valid.
+
+  If, pursuant to or in connection with a single transaction or
+arrangement, you convey, or propagate by procuring conveyance of, a
+covered work, and grant a patent license to some of the parties
+receiving the covered work authorizing them to use, propagate, modify
+or convey a specific copy of the covered work, then the patent license
+you grant is automatically extended to all recipients of the covered
+work and works based on it.
+
+  A patent license is &quot;discriminatory&quot; if it does not include within
+the scope of its coverage, prohibits the exercise of, or is
+conditioned on the non-exercise of one or more of the rights that are
+specifically granted under this License.  You may not convey a covered
+work if you are a party to an arrangement with a third party that is
+in the business of distributing software, under which you make payment
+to the third party based on the extent of your activity of conveying
+the work, and under which the third party grants, to any of the
+parties who would receive the covered work from you, a discriminatory
+patent license (a) in connection with copies of the covered work
+conveyed by you (or copies made from those copies), or (b) primarily
+for and in connection with specific products or compilations that
+contain the covered work, unless you entered into that arrangement,
+or that patent license was granted, prior to 28 March 2007.
+
+  Nothing in this License shall be construed as excluding or limiting
+any implied license or other defenses to infringement that may
+otherwise be available to you under applicable patent law.
+
+  12. No Surrender of Others&#39; Freedom.
+
+  If conditions are imposed on you (whether by court order, agreement or
+otherwise) that contradict the conditions of this License, they do not
+excuse you from the conditions of this License.  If you cannot convey a
+covered work so as to satisfy simultaneously your obligations under this
+License and any other pertinent obligations, then as a consequence you may
+not convey it at all.  For example, if you agree to terms that obligate you
+to collect a royalty for further conveying from those to whom you convey
+the Program, the only way you could satisfy both those terms and this
+License would be to refrain entirely from conveying the Program.
+
+  13. Use with the GNU Affero General Public License.
+
+  Notwithstanding any other provision of this License, you have
+permission to link or combine any covered work with a work licensed
+under version 3 of the GNU Affero General Public License into a single
+combined work, and to convey the resulting work.  The terms of this
+License will continue to apply to the part which is the covered work,
+but the special requirements of the GNU Affero General Public License,
+section 13, concerning interaction through a network will apply to the
+combination as such.
+
+  14. Revised Versions of this License.
+
+  The Free Software Foundation may publish revised and/or new versions of
+the GNU General Public License from time to time.  Such new versions will
+be similar in spirit to the present version, but may differ in detail to
+address new problems or concerns.
+
+  Each version is given a distinguishing version number.  If the
+Program specifies that a certain numbered version of the GNU General
+Public License &quot;or any later version&quot; applies to it, you have the
+option of following the terms and conditions either of that numbered
+version or of any later version published by the Free Software
+Foundation.  If the Program does not specify a version number of the
+GNU General Public License, you may choose any version ever published
+by the Free Software Foundation.
+
+  If the Program specifies that a proxy can decide which future
+versions of the GNU General Public License can be used, that proxy&#39;s
+public statement of acceptance of a version permanently authorizes you
+to choose that version for the Program.
+
+  Later license versions may give you additional or different
+permissions.  However, no additional obligations are imposed on any
+author or copyright holder as a result of your choosing to follow a
+later version.
+
+  15. Disclaimer of Warranty.
+
+  THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
+APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
+HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM &quot;AS IS&quot; WITHOUT WARRANTY
+OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM
+IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF
+ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+
+  16. Limitation of Liability.
+
+  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
+THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
+GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
+USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF
+DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD
+PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
+EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
+
+  17. Interpretation of Sections 15 and 16.
+
+  If the disclaimer of warranty and limitation of liability provided
+above cannot be given local legal effect according to their terms,
+reviewing courts shall apply local law that most closely approximates
+an absolute waiver of all civil liability in connection with the
+Program, unless a warranty or assumption of liability accompanies a
+copy of the Program in return for a fee.
+
+                     END OF TERMS AND CONDITIONS
+</pre></div>
+</div>
+<p># Changelog</p>
+<p>See the [releases for Scribe-Data](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/releases">https://github.com/scribe-org/Scribe-Data/releases</a>) for an up to date list of versions and their release dates.</p>
+<p>Scribe-Data tries to follow [semantic versioning](<a class="reference external" href="https://semver.org/">https://semver.org/</a>), a MAJOR.MINOR.PATCH version where increments are made of the:</p>
+<ul class="simple">
+<li><p>MAJOR version when we make incompatible API changes</p></li>
+<li><p>MINOR version when we add functionality in a backwards compatible manner</p></li>
+<li><p>PATCH version when we make backwards compatible bug fixes</p></li>
+</ul>
+<p>Emojis for the following are chosen based on [gitmoji](<a class="reference external" href="https://gitmoji.dev/">https://gitmoji.dev/</a>).</p>
+<p>## [Upcoming] Scribe-Data 4.0.0</p>
+<p>### ✨ Features</p>
+<ul class="simple">
+<li><p>Queries for countless data types for countless languages were expanded and added ❤️</p></li>
+<li><p>Scribe-Data is now a fully functional CLI.
+- Querying Wikidata lexicographical data can be done via the <cite>–query</cite> command ([#159](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/159">https://github.com/scribe-org/Scribe-Data/issues/159</a>)).
+- The output type of queries can be in JSON, CSV, TSV and SQLite, with conversions output types also being possible ([#145](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/145">https://github.com/scribe-org/Scribe-Data/issues/145</a>), [#146](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/146">https://github.com/scribe-org/Scribe-Data/issues/146</a>))
+- Output paths can be set for query results ([#144](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/144">https://github.com/scribe-org/Scribe-Data/issues/144</a>)).
+- The version of the CLI can be printed to the command line and the CLI can further be used to upgrade itself ([#186](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/186">https://github.com/scribe-org/Scribe-Data/issues/186</a>), [#157 ](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/157">https://github.com/scribe-org/Scribe-Data/issues/157</a>)).
+- Total Wikidata lexemes for languages and data types can be derived with the <cite>–total</cite> command ([#147](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/147">https://github.com/scribe-org/Scribe-Data/issues/147</a>)).
+- Commands can be used via an interactive mode with the <cite>–interactive</cite> command ([#158](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/158">https://github.com/scribe-org/Scribe-Data/issues/158</a>), [#203](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/203">https://github.com/scribe-org/Scribe-Data/issues/203</a>)).
+- Interactive mode works for <cite>get</cite> and <cite>total</cite> commands
+- Outputs were standardized to assure that the CLI experience is consistent</p></li>
+<li><p>The machine translation process has been removed to make way for the Wiktionary based implementation ([#292](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/292">https://github.com/scribe-org/Scribe-Data/issues/292</a>)).</p></li>
+<li><p>Package metadata files were standardized for languages, data types and Wikidata lexeme forms.</p></li>
+<li><p>CLI commands have an argument check that can suggest correct languages and data types ([#341](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/341">https://github.com/scribe-org/Scribe-Data/issues/341</a>)).</p></li>
+</ul>
+<p>### 🐞 Bug Fixes</p>
+<ul class="simple">
+<li><p>Wikidata query process stages no longer trigger the tqdm progress bar when they’re unsuccessful ([#155](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/155">https://github.com/scribe-org/Scribe-Data/issues/155</a>)).</p></li>
+</ul>
+<p>### ✅ Tests</p>
+<ul class="simple">
+<li><p>Tests have been written for the CLI to assure that it’s functionality remains consistent.</p></li>
+<li><p>Workflows were created to assure that the Wikidata queries and project structure are consistent to assure package functionality ([#339](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/339">https://github.com/scribe-org/Scribe-Data/issues/339</a>), [#357](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/357">https://github.com/scribe-org/Scribe-Data/issues/357</a>))
+- Project queries and its structure have been updated to match the rules developed for the checks.</p></li>
+</ul>
+<p>### 📝 Documentation</p>
+<ul class="simple">
+<li><p>The CLI’s functionality has been fully documented ([#152](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/152">https://github.com/scribe-org/Scribe-Data/issues/152</a>), [#208](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/208">https://github.com/scribe-org/Scribe-Data/issues/208</a>)).</p></li>
+<li><p>Documentation was created to show how to write Scribe-Data queries ([#395](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/395">https://github.com/scribe-org/Scribe-Data/issues/395</a>)).</p></li>
+</ul>
+<p>### ♻️ Code Refactoring</p>
+<ul class="simple">
+<li><p><cite>word_type</cite> has been switched to <cite>data_type</cite> throughout the codebase ([#160](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/160">https://github.com/scribe-org/Scribe-Data/issues/160</a>)).</p></li>
+<li><p>Case and gender map reference functions were updated to use hashmaps.</p></li>
+<li><p>The SPARQLWrapper access method has been extracted to the Wikidata utils and is imported into the files that need it ([#164](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/164">https://github.com/scribe-org/Scribe-Data/issues/164</a>)).</p></li>
+<li><p>Export data paths have been converted to centrally saved variables to reduce hard coded string repetition.</p></li>
+<li><p>Many files were renamed including <cite>update_data.py</cite> being renamed <cite>query_data.py</cite></p></li>
+<li><p>Paths within the package have been updated to work for all operating systems via <cite>pathlib</cite> ([#125](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/125">https://github.com/scribe-org/Scribe-Data/issues/125</a>)).</p></li>
+<li><p>The language formatting scripts have been dramatically simplified given changes to export paths all being the same.</p></li>
+<li><p>The <cite>update_files</cite> directory was removed in preparation of other means of showing data totals.</p></li>
+<li><p>The <cite>language_data_extraction</cite> directory was moved under the Wikidata directory as it’s only used for those processes now ([#446](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/446">https://github.com/scribe-org/Scribe-Data/issues/446</a>)).</p></li>
+<li><p>The emoji keyword process was centralized to simplify project maintenance ([#359](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/359">https://github.com/scribe-org/Scribe-Data/issues/359</a>)).</p></li>
+<li><p>PyICU was removed as a dependency and a process was made to install it and its needed dependencies given the operating system of the user ([#196](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/196">https://github.com/scribe-org/Scribe-Data/issues/196</a>)).</p></li>
+</ul>
+<p>## Scribe-Data 3.3.0</p>
+<p>### ✨ Features</p>
+<ul class="simple">
+<li><p>The translation process has been updated to allow for translations from non-English languages ([#72](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/72">https://github.com/scribe-org/Scribe-Data/issues/72</a>), [#73](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/73">https://github.com/scribe-org/Scribe-Data/issues/73</a>), [#74](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/74">https://github.com/scribe-org/Scribe-Data/issues/74</a>), [#75](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/75">https://github.com/scribe-org/Scribe-Data/issues/75</a>), [#75](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/75">https://github.com/scribe-org/Scribe-Data/issues/75</a>), [#76](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/76">https://github.com/scribe-org/Scribe-Data/issues/76</a>), [#77](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/77">https://github.com/scribe-org/Scribe-Data/issues/77</a>), [#78](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/78">https://github.com/scribe-org/Scribe-Data/issues/78</a>), [#79](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/79">https://github.com/scribe-org/Scribe-Data/issues/79</a>)).</p></li>
+</ul>
+<p>### 🐞 Bug Fixes</p>
+<ul class="simple">
+<li><p>Annotation bugs were removed like repeat or empty values.</p></li>
+<li><p>Perfect tenses of Portuguese verbs were fixed via finding the appropriate PID ([#68](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/68">https://github.com/scribe-org/Scribe-Data/issues/68</a>)).
+- Note that the most common past perfect property is not the standard one, so this will need to be fixed.</p></li>
+</ul>
+<p>### 📝 Documentation</p>
+<ul class="simple">
+<li><p>The documentation has been given a new layout with the logo in the top left ([#90](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/90">https://github.com/scribe-org/Scribe-Data/issues/90</a>)).</p></li>
+<li><p>The documentation now has links to the code at the top of each page ([#91](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/91">https://github.com/scribe-org/Scribe-Data/issues/91</a>)).</p></li>
+</ul>
+<p>### ♻️ Code Refactoring</p>
+<ul class="simple">
+<li><p>[pre-commit](<a class="reference external" href="https://pre-commit.com/">https://pre-commit.com/</a>) have been added to the repo to improve the development experience ([#137](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/137">https://github.com/scribe-org/Scribe-Data/issues/137</a>)).</p></li>
+<li><p>Code formatting was shifted from [black](<a class="reference external" href="https://github.com/psf/black">https://github.com/psf/black</a>) to [Ruff](<a class="reference external" href="https://github.com/astral-sh/ruff">https://github.com/astral-sh/ruff</a>).</p></li>
+<li><p>A Ruff based GitHub workflow was added to check the code formatting and lint the codebase on each pull request ([#109](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/109">https://github.com/scribe-org/Scribe-Data/issues/109</a>)).</p></li>
+<li><p>The <cite>_update_files</cite> directory was renamed <cite>update_files</cite> as these files are used in non-internal manners now ([#57](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/57">https://github.com/scribe-org/Scribe-Data/issues/57</a>)).</p></li>
+<li><p>A common function has been created to map Wikidata ids to noun genders ([#69](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/69">https://github.com/scribe-org/Scribe-Data/issues/69</a>)).</p></li>
+<li><p>The project now is installed locally for development and command line usage, so usages of <cite>sys.path</cite> have been removed from files ([#122](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/122">https://github.com/scribe-org/Scribe-Data/issues/122</a>)).</p></li>
+<li><p>The directory structure has been dramatically streamlined and includes folders for future projects where language data could come from other sources like Wiktionary ([#139](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/139">https://github.com/scribe-org/Scribe-Data/issues/139</a>)).
+- Translation files are moved to their own directory.
+- The <cite>extract_transform</cite> directory has been removed and all files within it have been moved one level up.
+- The <cite>languages</cite> directory has been renamed <cite>language_data_extraction</cite>.
+- All files within <cite>wikidata/_resources</cite> have been moved to the <cite>resources</cite> directory.
+- The gender and case annotations for data formatting have now been commonly defined.
+- All language directory <cite>formatted_data</cite> files have been now moved to the <cite>scribe_data_json_export</cite> directory to prepare for outputs being required to be directed to a directory outside of the package.
+- Path computing has been refactored throughout the codebase, and unneeded functions for data transfers have been removed.</p></li>
+</ul>
+<p>## Scribe-Data 3.2.2</p>
+<ul class="simple">
+<li><p>Minor fixes to documentation index and file docstrings to fix errors.</p></li>
+<li><p>Revert change to package path definition to hopefully register the resources directory.</p></li>
+</ul>
+<p>## Scribe-Data 3.2.1</p>
+<p>### ♻️ Code Refactoring</p>
+<ul class="simple">
+<li><p>The docs and tests were grafted into the package using <cite>MANIFEST.in</cite>.</p></li>
+<li><p>Minor fixes to file and function docstrings and documentation files.</p></li>
+<li><p><cite>include_package_data=True</cite> is used in <cite>setup.py</cite> to hopefully include all files in the package distribution.</p></li>
+</ul>
+<p>## Scribe-Data 3.2.0</p>
+<p>### ✨ Features</p>
+<ul class="simple">
+<li><p>The data and process needed for an English keyboard has been added ([#39](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/39">https://github.com/scribe-org/Scribe-Data/issues/39</a>)).
+- The Wikidata queries for English have been updated to get all nouns and verbs.
+- Formatting scripts have been written to prepare the queried data and load it into an SQLite database.</p></li>
+<li><p>The data update process has been cleaned up in preparation for future changes to Scribe-Data and to implement better practices.</p></li>
+<li><p>Language data was extracted into a JSON file for more succinct referencing ([#52](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/52">https://github.com/scribe-org/Scribe-Data/issues/52</a>)).</p></li>
+<li><p>Language codes are now checked with the package [langcodes](<a class="reference external" href="https://github.com/rspeer/langcodes">https://github.com/rspeer/langcodes</a>) for easier expansion.</p></li>
+<li><p>A process has been created to check and update words that can be translated for each Scribe language ([#44](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/44">https://github.com/scribe-org/Scribe-Data/issues/44</a>)).</p></li>
+<li><p>The baseline data returned from Wikidata queries is now removed once a formatted data file is created.</p></li>
+</ul>
+<p>### 🐞 Bug Fixes</p>
+<ul class="simple">
+<li><p>Tensorflow was removed from the download wiki process to fix build problems on Macs.</p></li>
+</ul>
+<p>### ✅ Tests</p>
+<ul class="simple">
+<li><p>A full testing suite has been added to run on GitHub Actions ([#37](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/37">https://github.com/scribe-org/Scribe-Data/issues/37</a>)).</p></li>
+<li><p>Unit tests have been added for Wikidata queries ([#48](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/48">https://github.com/scribe-org/Scribe-Data/issues/48</a>)) and utility functions ([#50](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/50">https://github.com/scribe-org/Scribe-Data/issues/50</a>)).</p></li>
+</ul>
+<p>### ♻️ Code Refactoring</p>
+<ul class="simple">
+<li><p>The Anaconda based virtual environment was removed and documentation was updated to reflect this.</p></li>
+<li><p>Language data processes were moved into the <cite>src/scribe_data/extract_transform/languages</cite> directory to clean up the structure.</p></li>
+<li><p>Code formatting processes were defined with common structures based on language and word type variables defined at the top of files.</p></li>
+</ul>
+<p>## Scribe-Data 3.1.0</p>
+<p>### ✨ Features</p>
+<ul class="simple">
+<li><p>The word “Scribe” is now added to language database nouns files if it’s not already present ([#35](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/35">https://github.com/scribe-org/Scribe-Data/issues/35</a>)).</p></li>
+<li><p>German contracted prepositions have been added to the German prepositions formatting process ([#34](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/34">https://github.com/scribe-org/Scribe-Data/issues/34</a>)).</p></li>
+<li><p>Words that are upper case are now better included in the autocomplete lexicon with their lower case equivalents being removed.</p></li>
+<li><p>Words with apostrophes have been removed from the autocomplete lexicon.</p></li>
+</ul>
+<p>### ♻️ Code Refactoring</p>
+<ul class="simple">
+<li><p>Database output column names are now zero indexed to better align with Python and other language standards.</p></li>
+</ul>
+<p>## Scribe-Data 3.0.0</p>
+<p>### ✨ Features</p>
+<ul class="simple">
+<li><p>Scribe-Data now has the ability to generate SQLite databases from formatted language data.
+- <cite>data_to_sqlite.py</cite> is used to read available JSON files and input their information into the databases.</p></li>
+<li><p>These databases are now sent to Scribe apps via defined paths.
+- <cite>send_dbs_to_scribe.py</cite> finds all available language databases and copies them.
+- Separating this step from the data update is in preparation for data import in the future where this will be an individual step.</p></li>
+<li><p>Scribe-Data now also creates autocomplete lexicons for each language within <cite>data_to_sqlite.py</cite>.</p></li>
+<li><p>JSON data is no longer able to be uploaded to Scribe app directories directly, with the SQLite directories now being exported instead.</p></li>
+<li><p>Emojis of singular nouns are now also linked to their plural counterparts if the plural isn’t present in the emoji keyword outputs.</p></li>
+<li><p>The emoji process also now updates a column to the <cite>data_table.txt</cite> file for sharing on readmes with <cite>update_data.py</cite> maintaining it in the data update process.</p></li>
+</ul>
+<p>### ♻️ Code Refactoring</p>
+<ul class="simple">
+<li><p>The Jupyter notebooks for autosuggestions and emojis as well as <cite>update_data.py</cite> were moved to the <cite>extract_transform</cite> directory given that they’re not used to load data anymore.
+- Their code was refactored to reflect their new locations.</p></li>
+<li><p>Massive amounts of refactoring happened to achieve the shift in the data export method:
+- <cite>format_WORD_TYPE.py</cite> files export to a <cite>formatted_data</cite> directory within <cite>extract_transform</cite>.
+- Copies of all data JSONs that were originally in Scribe apps are now in the <cite>formatted_data</cite> directories.
+- Functions in <cite>update_utils.py</cite> were switched given that data is no longer uploaded into a <cite>Data</cite> directory within the language keyboard directories within Scribe apps.
+- Lots of functions and variables were renamed to make them more understandable.
+- Code to derive appropriate export locations within <cite>format_WORD_TYPE.py</cite> files was removed in favor of a language <cite>formatted_data</cite> directory.
+- regex was added as a dependency.
+- pylint comments were removed.</p></li>
+<li><p>Verb SPARQL query scripts for Spanish and Italian were simplified to remove unneeded repeat conditions ([#7](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/7">https://github.com/scribe-org/Scribe-Data/issues/7</a>)).</p></li>
+</ul>
+<p>### 🐞 Bug Fixes</p>
+<ul class="simple">
+<li><p>The statements in translation files have been fixed as they were improperly defined after a file was moved.</p></li>
+</ul>
+<p>## Scribe-Data 2.2.2</p>
+<p>### ✨ Features</p>
+<ul class="simple">
+<li><p>An option to remove the <cite>is_base</cite> and <cite>rank</cite> sub keys was added.</p></li>
+</ul>
+<p>### ♻️ Code Refactoring</p>
+<ul class="simple">
+<li><p>The export filenames for emoji keywords were renamed to reflect their usage in autosuggestions and soon autocompletions as well.</p></li>
+</ul>
+<p>## Scribe-Data 2.2.1</p>
+<p>### ✨ Features</p>
+<ul class="simple">
+<li><p>The number of suggested emojis for words can now be limited.</p></li>
+<li><p>The total number of emojis that suggestions can be made for can now be limited.</p></li>
+</ul>
+<p>## Scribe-Data 2.2.0</p>
+<p>### ✨ Features</p>
+<ul class="simple">
+<li><p>Scribe-Data now allows the user to create JSONs of word-emoji key-value pairs ([#24](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/24">https://github.com/scribe-org/Scribe-Data/issues/24</a>)).</p></li>
+</ul>
+<p>## Scribe-Data 2.1.0</p>
+<p>### ✨ Features</p>
+<ul class="simple">
+<li><p>Scribe-Data can now split Wikidata queries into multiple stages to break up those that were too large to run ([#21](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/21">https://github.com/scribe-org/Scribe-Data/issues/21</a>)).</p></li>
+</ul>
+<p>## Scribe-Data 2.0.0</p>
+<p>### ✨ Features</p>
+<ul class="simple">
+<li><p>Scribe-Data now has the ability to download Wikipedia dumps of any language ([#15](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/15">https://github.com/scribe-org/Scribe-Data/issues/15</a>)).</p></li>
+<li><p>Functions have been added to parse and clean the above dumps ([#15](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/15">https://github.com/scribe-org/Scribe-Data/issues/15</a>)).</p></li>
+<li><p>Autosuggestions are generated from the cleaned texts by deriving most common words and those words that most commonly follow them ([#15](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/15">https://github.com/scribe-org/Scribe-Data/issues/15</a>)).</p></li>
+<li><p>A query for profane words has been added and integrated into the autosuggest flow to make sure that inappropriate words are not included ([#16](<a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues/16">https://github.com/scribe-org/Scribe-Data/issues/16</a>)).
+- The adjectives column has been removed from Scribe data tables until support is offered.</p></li>
+</ul>
+<p>### ♻️ Code Refactoring</p>
+<ul class="simple">
+<li><p>The error messages for incorrect args in update_data.py have been updated.</p></li>
+</ul>
+<p>## Scribe-Data 1.0.1</p>
+<p>### ✨ Features</p>
+<ul class="simple">
+<li><p>update_data.py now functions using SPARQLWrapper instead of wikidataintegrator.</p></li>
+</ul>
+<p>### 🐞 Bug Fixes</p>
+<ul class="simple">
+<li><p>The data update process has been fixed to work for all queries.</p></li>
+<li><p>Hard coded strings for Spanish formatting files were fixed.</p></li>
+<li><p>The paths of update_data.py were changed to match the new package structure.</p></li>
+</ul>
+<p>## Scribe-Data 1.0.0</p>
+<p>### 🚀 Deployment</p>
+<ul class="simple">
+<li><p>Releasing a Python package so that codes are accessible and the structure is set for future project iterations.</p></li>
+</ul>
+<p>### ✨ Features</p>
+<ul class="simple">
+<li><p>Data updates are done via a single file that loads new formatted data into each Scribe application.</p></li>
+<li><p>This will be expanded on in the future to create language packs that can be downloaded in app.</p></li>
+</ul>
+<p>### 🗃️ Data</p>
+<ul class="simple">
+<li><p>Data extraction and formatting scripts for each of Scribe’s current languages as well as those with significant data on Wikidata are included.</p></li>
+</ul>
+<p>Languages include: French, German, Italian, Portuguese, Russian, Spanish, and Swedish.
+Word types include: nouns, verbs, prepositions and translations.</p>
+<p>### ♻️ Code Refactoring</p>
+<ul class="simple">
+<li><p>The data update process now updates files in Android and Desktop directories if they’re present.</p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scribe_data/utils.html" class="btn btn-neutral float-left" title="utils.py" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Scribe-Data developers (GPL 3.0 License).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

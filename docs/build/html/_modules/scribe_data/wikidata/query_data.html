@@ -1,0 +1,453 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scribe_data.wikidata.query_data &mdash; Scribe-Data 3.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=18e5adab" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/ScribeFavicon.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3eb8911e"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/ScribeDataLogo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../scribe_data/index.html">Scribe-Data</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes.html">Contributing to Scribe-Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes.html#license">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Scribe-Data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scribe_data.wikidata.query_data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scribe_data.wikidata.query_data</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Updates data for Scribe by running all or desired WDQS queries and formatting scripts.</span>
+
+<span class="sd">.. raw:: html</span>
+
+<span class="sd">    &lt;!--</span>
+<span class="sd">    * Copyright (C) 2024 Scribe</span>
+<span class="sd">    *</span>
+<span class="sd">    * This program is free software: you can redistribute it and/or modify</span>
+<span class="sd">    * it under the terms of the GNU General Public License as published by</span>
+<span class="sd">    * the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">    * (at your option) any later version.</span>
+<span class="sd">    *</span>
+<span class="sd">    * This program is distributed in the hope that it will be useful,</span>
+<span class="sd">    * but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">    * GNU General Public License for more details.</span>
+<span class="sd">    *</span>
+<span class="sd">    * You should have received a copy of the GNU General Public License</span>
+<span class="sd">    * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
+<span class="sd">    --&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">http.client</span> <span class="kn">import</span> <span class="n">IncompleteRead</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">urllib.error</span> <span class="kn">import</span> <span class="n">HTTPError</span>
+
+<span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">scribe_data.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LANGUAGE_DATA_EXTRACTION_DIR</span><span class="p">,</span>
+    <span class="n">format_sublanguage_name</span><span class="p">,</span>
+    <span class="n">language_metadata</span><span class="p">,</span>
+    <span class="n">list_all_languages</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">scribe_data.wikidata.wikidata_utils</span> <span class="kn">import</span> <span class="n">sparql</span>
+
+
+<div class="viewcode-block" id="execute_formatting_script">
+<a class="viewcode-back" href="../../../scribe_data/wikidata/query_data.html#scribe_data.wikidata.query_data.execute_formatting_script">[docs]</a>
+<span class="k">def</span> <span class="nf">execute_formatting_script</span><span class="p">(</span><span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes a formatting script given a filepath and output directory for the process.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        output_dir : str</span>
+<span class="sd">            The output directory path for results.</span>
+
+<span class="sd">        language : str</span>
+<span class="sd">            The language for which the data is being loaded.</span>
+
+<span class="sd">        data_type : str</span>
+<span class="sd">            The type of data being loaded (e.g. &#39;nouns&#39;, &#39;verbs&#39;).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        The results of the formatting script saved in the given output directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">formatting_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;format_data.py&quot;</span>
+
+    <span class="c1"># Determine the root directory of the project.</span>
+    <span class="n">project_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
+
+    <span class="c1"># Use sys.executable to get the Python executable path.</span>
+    <span class="n">python_executable</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span>
+
+    <span class="c1"># Set the PYTHONPATH environment variable.</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">env</span><span class="p">[</span><span class="s2">&quot;PYTHONPATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">project_root</span><span class="p">)</span>
+
+    <span class="n">subprocess_args</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;--dir-path&quot;</span><span class="p">,</span>
+        <span class="n">output_dir</span><span class="p">,</span>
+        <span class="s2">&quot;--language&quot;</span><span class="p">,</span>
+        <span class="n">language</span><span class="p">,</span>
+        <span class="s2">&quot;--data_type&quot;</span><span class="p">,</span>
+        <span class="n">data_type</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">python_executable</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">formatting_file_path</span><span class="p">),</span>
+                <span class="o">*</span><span class="n">subprocess_args</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
+            <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: The formatting script failed with exit status </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="query_data">
+<a class="viewcode-back" href="../../../scribe_data/wikidata/query_data.html#scribe_data.wikidata.query_data.query_data">[docs]</a>
+<span class="k">def</span> <span class="nf">query_data</span><span class="p">(</span>
+    <span class="n">languages</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">interactive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Queries language data from the Wikidata lexicographical data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        language : str</span>
+<span class="sd">            The language(s) to get.</span>
+
+<span class="sd">        data_type : str</span>
+<span class="sd">            The data type(s) to get.</span>
+
+<span class="sd">        output_dir : str</span>
+<span class="sd">            The output directory path for results.</span>
+
+<span class="sd">        overwrite : bool (default: False)</span>
+<span class="sd">            Whether to overwrite existing files.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        Formatted data from Wikidata saved in the output directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">current_languages</span> <span class="o">=</span> <span class="n">list_all_languages</span><span class="p">(</span><span class="n">language_metadata</span><span class="p">)</span>
+    <span class="n">current_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;nouns&quot;</span><span class="p">,</span> <span class="s2">&quot;verbs&quot;</span><span class="p">,</span> <span class="s2">&quot;prepositions&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Assign current_languages and current_data_type if no arguments have been passed.</span>
+    <span class="n">languages_update</span> <span class="o">=</span> <span class="n">current_languages</span> <span class="k">if</span> <span class="n">languages</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">languages</span>
+    <span class="n">languages_update</span> <span class="o">=</span> <span class="p">[</span><span class="n">lang</span> <span class="k">for</span> <span class="n">lang</span> <span class="ow">in</span> <span class="n">languages_update</span><span class="p">]</span>
+    <span class="n">data_type_update</span> <span class="o">=</span> <span class="n">current_data_type</span> <span class="k">if</span> <span class="n">data_type</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">data_type</span>
+
+    <span class="n">all_language_data_extraction_files</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">LANGUAGE_DATA_EXTRACTION_DIR</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
+    <span class="p">]</span>
+
+    <span class="n">language_data_extraction_files_in_use</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">path</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">all_language_data_extraction_files</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">data_type_update</span>
+        <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">languages_update</span>
+        <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;__init__.py&quot;</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Derive the maximum query interval for use in looping through all queries.</span>
+    <span class="n">query_intervals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">language_data_extraction_files_in_use</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;.sparql&quot;</span><span class="p">)</span> <span class="p">:]</span> <span class="o">==</span> <span class="s2">&quot;.sparql&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;.+_\d+.sparql&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)):</span>
+                <span class="n">query_intervals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;_(\d+)\.&quot;</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+
+    <span class="k">if</span> <span class="n">query_intervals</span><span class="p">:</span>
+        <span class="n">max_query_interval</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">query_intervals</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">max_query_interval</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">queries_to_run</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;_\d+.sparql&quot;</span><span class="p">,</span> <span class="s2">&quot;.sparql&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">language_data_extraction_files_in_use</span>
+        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;.sparql&quot;</span><span class="p">)</span> <span class="p">:]</span> <span class="o">==</span> <span class="s2">&quot;.sparql&quot;</span>
+    <span class="p">}</span>
+    <span class="n">queries_to_run</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">queries_to_run</span><span class="p">)</span>
+
+    <span class="c1"># MARK: Run Queries</span>
+
+    <span class="c1"># Run queries and format data.</span>
+    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span>
+        <span class="n">queries_to_run</span><span class="p">,</span>
+        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Data updated&quot;</span><span class="p">,</span>
+        <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;process&quot;</span><span class="p">,</span>
+        <span class="n">disable</span><span class="o">=</span><span class="n">interactive</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">lang</span> <span class="o">=</span> <span class="n">format_sublanguage_name</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">language_metadata</span><span class="p">)</span>
+        <span class="n">target_type</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="n">updated_path</span> <span class="o">=</span> <span class="n">output_dir</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="k">if</span> <span class="n">output_dir</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;./&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">output_dir</span>
+        <span class="n">export_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">updated_path</span><span class="p">)</span> <span class="o">/</span> <span class="n">lang</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+        <span class="n">export_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_type</span><span class="si">}</span><span class="s2">.json&quot;</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">export_dir</span> <span class="o">/</span> <span class="n">file_name</span>
+
+        <span class="k">if</span> <span class="n">existing_files</span> <span class="o">:=</span> <span class="nb">list</span><span class="p">(</span><span class="n">export_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_type</span><span class="si">}</span><span class="s2">*.json&quot;</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Overwrite is enabled. Removing existing files...&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">existing_files</span><span class="p">:</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">interactive</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Existing file(s) found for </span><span class="si">{</span><span class="n">lang</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">target_type</span><span class="si">}</span><span class="s2"> in the </span><span class="si">{</span><span class="n">output_dir</span><span class="si">}</span><span class="s2"> directory:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">existing_files</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                    <span class="c1"># choice = input(</span>
+                    <span class="c1">#     &quot;\nChoose an option:\n1. Overwrite existing (press &#39;o&#39;)\n2. Keep all (press &#39;k&#39;)\n3. Skip process (press anything else)\nEnter your choice: &quot;</span>
+                    <span class="c1"># )</span>
+
+                    <span class="n">choice</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span>
+                        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Choose an option:</span><span class="se">\n</span><span class="s2">1. Overwrite existing data (press &#39;o&#39;)</span><span class="se">\n</span><span class="s2">2. Skip process (press anything else)</span><span class="se">\n</span><span class="s2">Enter your choice: &quot;</span>
+                    <span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">choice</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;o&quot;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Removing existing files...&quot;</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">existing_files</span><span class="p">:</span>
+                            <span class="n">file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+
+                    <span class="c1"># elif choice in [&quot;k&quot;, &quot;K&quot;]:</span>
+                    <span class="c1">#     timestamp = datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S&quot;)</span>
+                    <span class="c1">#     file_name = f&quot;{target_type}_{timestamp}.json&quot;</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping update for </span><span class="si">{</span><span class="n">lang</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">target_type</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                        <span class="k">break</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Querying and formatting </span><span class="si">{</span><span class="n">lang</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">target_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Mark the query as the first in a set of queries if needed.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.sparql&quot;</span><span class="p">,</span> <span class="s2">&quot;_1.sparql&quot;</span><span class="p">))</span>
+
+        <span class="c1"># First format the lines into a multi-line string and then pass this to SPARQLWrapper.</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">query_lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+        <span class="n">sparql</span><span class="o">.</span><span class="n">setQuery</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_lines</span><span class="p">))</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">sparql</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">http_err</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HTTPError with </span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">http_err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">IncompleteRead</span> <span class="k">as</span> <span class="n">read_err</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incomplete read error with </span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">read_err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">results</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nothing returned by the WDQS server for </span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Allow for a query to be reran up to two times.</span>
+            <span class="k">if</span> <span class="n">queries_to_run</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The query will be retried.&quot;</span><span class="p">)</span>
+                <span class="n">queries_to_run</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Subset the returned JSON and the individual results before saving.</span>
+            <span class="n">query_results</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">][</span><span class="s2">&quot;bindings&quot;</span><span class="p">]</span>
+
+            <span class="n">results_final</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">query_results</span><span class="p">:</span>  <span class="c1"># query_results is also a list</span>
+                <span class="n">r_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+
+                <span class="n">results_final</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_dict</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+                <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+                <span class="o">/</span> <span class="n">lang</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_type</span><span class="si">}</span><span class="s2">_queried.json&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+                <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
+            <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">results_final</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s2">&quot;_1&quot;</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                <span class="c1"># Note: Only the first query was ran, so we need to run the second and append the json.</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_query_interval</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]:</span>
+                    <span class="n">suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">q</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="p">))</span>
+
+                    <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                            <span class="n">query_lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+                            <span class="n">sparql</span><span class="o">.</span><span class="n">setQuery</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_lines</span><span class="p">))</span>
+
+                            <span class="n">results</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">results</span> <span class="o">=</span> <span class="n">sparql</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span>
+
+                            <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HTTPError with </span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                            <span class="k">if</span> <span class="n">results</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nothing returned by the WDQS server for </span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                                <span class="c1"># Allow for a query to be reran up to two times.</span>
+                                <span class="k">if</span> <span class="n">queries_to_run</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+                                    <span class="n">queries_to_run</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="c1"># Subset the returned JSON and the individual results before saving.</span>
+                                <span class="n">query_results</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">][</span><span class="s2">&quot;bindings&quot;</span><span class="p">]</span>
+
+                                <span class="c1"># Note: Don&#39;t rewrite results_final as we want to extend the json and combine in formatting.</span>
+                                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">query_results</span><span class="p">:</span>  <span class="c1"># query_results is also a list</span>
+                                    <span class="n">r_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+
+                                    <span class="c1"># Note: The following is so we have a breakdown of queries for German later.</span>
+                                    <span class="c1"># Note: We need auxiliary verbs to be present as we loop to get both sein and haben forms.</span>
+                                    <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;German&quot;</span><span class="p">:</span>
+                                        <span class="n">r_dict_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">r_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                                        <span class="k">if</span> <span class="s2">&quot;auxiliaryVerb&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r_dict_keys</span><span class="p">:</span>
+                                            <span class="n">r_dict</span><span class="p">[</span><span class="s2">&quot;auxiliaryVerb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+                                    <span class="n">results_final</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_dict</span><span class="p">)</span>
+
+                                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+                                    <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+                                    <span class="o">/</span> <span class="n">lang</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                                    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_type</span><span class="si">}</span><span class="s2">_queried.json&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+                                    <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
+                                <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                                    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
+                                        <span class="n">results_final</span><span class="p">,</span>
+                                        <span class="n">f</span><span class="p">,</span>
+                                        <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                        <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                    <span class="p">)</span>
+
+            <span class="c1"># MARK: Save Results</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">results_final</span><span class="p">,</span> <span class="n">json_file</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># Call the formatting script.</span>
+            <span class="n">execute_formatting_script</span><span class="p">(</span>
+                <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="n">lang</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="n">target_type</span>
+            <span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">query_data</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Scribe-Data developers (GPL 3.0 License).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

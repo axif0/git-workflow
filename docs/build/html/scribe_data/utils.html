@@ -1,0 +1,536 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.py &mdash; Scribe-Data 3.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=18e5adab" />
+
+  
+    <link rel="shortcut icon" href="../_static/ScribeFavicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3eb8911e"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Contributing to Scribe-Data" href="../notes.html" />
+    <link rel="prev" title="cli/" href="cli.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/ScribeDataLogo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Scribe-Data</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="load/index.html">load/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unicode/index.html">unicode/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wikidata/index.html">wikidata/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wikipedia/index.html">wikipedia/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wiktionary/index.html">wiktionary/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">cli/</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">utils.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils._load_json"><code class="docutils literal notranslate"><span class="pre">_load_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils._find"><code class="docutils literal notranslate"><span class="pre">_find()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.get_language_qid"><code class="docutils literal notranslate"><span class="pre">get_language_qid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.get_language_iso"><code class="docutils literal notranslate"><span class="pre">get_language_iso()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.get_language_from_iso"><code class="docutils literal notranslate"><span class="pre">get_language_from_iso()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.load_queried_data"><code class="docutils literal notranslate"><span class="pre">load_queried_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.remove_queried_data"><code class="docutils literal notranslate"><span class="pre">remove_queried_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.export_formatted_data"><code class="docutils literal notranslate"><span class="pre">export_formatted_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.get_ios_data_path"><code class="docutils literal notranslate"><span class="pre">get_ios_data_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.get_android_data_path"><code class="docutils literal notranslate"><span class="pre">get_android_data_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.check_command_line_args"><code class="docutils literal notranslate"><span class="pre">check_command_line_args()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.check_and_return_command_line_args"><code class="docutils literal notranslate"><span class="pre">check_and_return_command_line_args()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.map_genders"><code class="docutils literal notranslate"><span class="pre">map_genders()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.map_cases"><code class="docutils literal notranslate"><span class="pre">map_cases()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.order_annotations"><code class="docutils literal notranslate"><span class="pre">order_annotations()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.format_sublanguage_name"><code class="docutils literal notranslate"><span class="pre">format_sublanguage_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.list_all_languages"><code class="docutils literal notranslate"><span class="pre">list_all_languages()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.list_languages_with_metadata_for_data_type"><code class="docutils literal notranslate"><span class="pre">list_languages_with_metadata_for_data_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scribe_data.utils.camel_to_snake"><code class="docutils literal notranslate"><span class="pre">camel_to_snake()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Contributing to Scribe-Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html#license">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Scribe-Data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Scribe-Data</a></li>
+      <li class="breadcrumb-item active">utils.py</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/scribe_data/utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="utils-py">
+<h1>utils.py<a class="headerlink" href="#utils-py" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://github.com/scribe-org/Scribe-Data/blob/main/src/scribe_data/utils.py">View code on Github</a></p>
+<p id="module-scribe_data.utils">Utility functions for data extraction, formatting and loading.</p>
+<!--
+* Copyright (C) 2024 Scribe
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <https://www.gnu.org/licenses/>.
+--><dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils._load_json">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">_load_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#_load_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils._load_json" title="Link to this definition"></a></dt>
+<dd><p>Loads a JSON resource from a package into a python entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>package_path</strong><span class="classifier">str</span></dt><dd><p>The fully qualified package that contains the resource.</p>
+</dd>
+<dt><strong>file_name</strong><span class="classifier">str</span></dt><dd><p>The name of the file (resource) that contains the JSON data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>A python entity representing the JSON content.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils._find">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">_find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#_find"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils._find" title="Link to this definition"></a></dt>
+<dd><p>Finds a target value based on a source key/value pair from the language metadata.</p>
+<p>This version handles both regular languages and those with sub-languages (e.g., Norwegian).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>source_value</strong><span class="classifier">str</span></dt><dd><p>The source value to find equivalents for (e.g., ‘english’, ‘nynorsk’).</p>
+</dd>
+<dt><strong>source_key</strong><span class="classifier">str</span></dt><dd><p>The source key to reference (e.g., ‘language’).</p>
+</dd>
+<dt><strong>target_key</strong><span class="classifier">str</span></dt><dd><p>The key to target (e.g., ‘qid’).</p>
+</dd>
+<dt><strong>error_msg</strong><span class="classifier">str</span></dt><dd><p>The message displayed when a value cannot be found.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>The ‘target’ value given the passed arguments.</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ValueError</strong><span class="classifier">when a source_value is not supported or the language only has sub-languages.</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.get_language_qid">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">get_language_qid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#get_language_qid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.get_language_qid" title="Link to this definition"></a></dt>
+<dd><p>Returns the QID of the given language.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>language</strong><span class="classifier">str</span></dt><dd><p>The language the QID should be returned for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>The Wikidata QID for the language.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.get_language_iso">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">get_language_iso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#get_language_iso"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.get_language_iso" title="Link to this definition"></a></dt>
+<dd><p>Returns the ISO code of the given language.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>language</strong><span class="classifier">str</span></dt><dd><p>The language the ISO should be returned for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>The ISO code for the language.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.get_language_from_iso">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">get_language_from_iso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iso</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#get_language_from_iso"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.get_language_from_iso" title="Link to this definition"></a></dt>
+<dd><p>Returns the language name for the given ISO.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>iso</strong><span class="classifier">str</span></dt><dd><p>The ISO the language name should be returned for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>The name for the language which has an ISO value of iso.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.load_queried_data">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">load_queried_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#load_queried_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.load_queried_data" title="Link to this definition"></a></dt>
+<dd><p>Loads queried data from a JSON file for a specific language and data type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dir_path</strong><span class="classifier">str</span></dt><dd><p>The path to the directory containing the queried data.</p>
+</dd>
+<dt><strong>language</strong><span class="classifier">str</span></dt><dd><p>The language for which the data is being loaded.</p>
+</dd>
+<dt><strong>data_type</strong><span class="classifier">str</span></dt><dd><p>The type of data being loaded (e.g. ‘nouns’, ‘verbs’).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple(Any, str)</dt><dd><p>A tuple containing the loaded data and the path to the data file.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.remove_queried_data">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">remove_queried_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#remove_queried_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.remove_queried_data" title="Link to this definition"></a></dt>
+<dd><p>Removes queried data for a specific language and data type as a new formatted file has been generated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dir_path</strong><span class="classifier">str</span></dt><dd><p>The path to the directory containing the queried data.</p>
+</dd>
+<dt><strong>language</strong><span class="classifier">str</span></dt><dd><p>The language for which the data is being loaded.</p>
+</dd>
+<dt><strong>data_type</strong><span class="classifier">str</span></dt><dd><p>The type of data being loaded (e.g. ‘nouns’, ‘verbs’).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>None</strong><span class="classifier">The file is deleted.</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.export_formatted_data">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">export_formatted_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_data_in_use</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#export_formatted_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.export_formatted_data" title="Link to this definition"></a></dt>
+<dd><p>Exports formatted data to a JSON file for a specific language and data type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dir_path</strong><span class="classifier">str</span></dt><dd><p>The path to the directory containing the queried data.</p>
+</dd>
+<dt><strong>formatted_data</strong><span class="classifier">dict</span></dt><dd><p>The data to be exported.</p>
+</dd>
+<dt><strong>language</strong><span class="classifier">str</span></dt><dd><p>The language for which the data is being exported.</p>
+</dd>
+<dt><strong>data_type</strong><span class="classifier">str</span></dt><dd><p>The type of data being exported (e.g. ‘nouns’, ‘verbs’).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.get_ios_data_path">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">get_ios_data_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#get_ios_data_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.get_ios_data_path" title="Link to this definition"></a></dt>
+<dd><p>Returns the path to the data json of the iOS app given a language.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>language</strong><span class="classifier">str</span></dt><dd><p>The language the path should be returned for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>The path to the language folder for the given language.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.get_android_data_path">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">get_android_data_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#get_android_data_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.get_android_data_path" title="Link to this definition"></a></dt>
+<dd><p>Returns the path to the data json of the Android app given a language.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>language</strong><span class="classifier">str</span></dt><dd><p>The language the path should be returned for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>The path to the assets data folder for the application.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.check_command_line_args">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">check_command_line_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passed_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values_to_check</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#check_command_line_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.check_command_line_args" title="Link to this definition"></a></dt>
+<dd><p>Checks command line arguments passed to Scribe-Data files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>file_name</strong><span class="classifier">str</span></dt><dd><p>The name of the file for clear error outputs if necessary.</p>
+</dd>
+<dt><strong>passed_values</strong><span class="classifier">UNKNOWN (will be checked)</span></dt><dd><p>An argument to be checked against known values.</p>
+</dd>
+<dt><strong>values_to_check</strong><span class="classifier">list(str)</span></dt><dd><p>The values that should be checked against.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>args: list(str)</dt><dd><p>The arguments or an error are returned depending on if they’re correct.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.check_and_return_command_line_args">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">check_and_return_command_line_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_args_check</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_args_check</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#check_and_return_command_line_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.check_and_return_command_line_args" title="Link to this definition"></a></dt>
+<dd><p>Checks command line arguments passed to Scribe-Data files and returns them if correct.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>all_args</strong><span class="classifier">list[str]</span></dt><dd><p>The arguments passed to the Scribe-Data file.</p>
+</dd>
+<dt><strong>first_args_check</strong><span class="classifier">list[str]</span></dt><dd><p>The values that the first argument should be checked against.</p>
+</dd>
+<dt><strong>second_args_check</strong><span class="classifier">list[str]</span></dt><dd><p>The values that the second argument should be checked against.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>first_args, second_args: Tuple[Optional[list[str]], Optional[list[str]]]</dt><dd><p>The subset of possible first and second arguments that have been verified as being valid.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.map_genders">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">map_genders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikidata_gender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#map_genders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.map_genders" title="Link to this definition"></a></dt>
+<dd><p>Maps genders from Wikidata to succinct versions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>wikidata_gender</strong><span class="classifier">str</span></dt><dd><p>The gender of the noun that was queried from WikiData.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>The gender value corrected in case the Wikidata ID was queried.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.map_cases">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">map_cases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikidata_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#map_cases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.map_cases" title="Link to this definition"></a></dt>
+<dd><p>Maps cases from Wikidata to more succinct versions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>wikidata_case</strong><span class="classifier">str</span></dt><dd><p>The case of the noun that was queried from WikiData.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>The case value corrected in case the Wikidata ID was queried.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.order_annotations">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">order_annotations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">annotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#order_annotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.order_annotations" title="Link to this definition"></a></dt>
+<dd><p>Standardizes the annotations that are provided to users where more than one is applicable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>annotation</strong><span class="classifier">str</span></dt><dd><p>The annotation to be returned to the user in the command bar.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.format_sublanguage_name">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">format_sublanguage_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lang</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'arabic':</span> <span class="pre">{'iso':</span> <span class="pre">'ar',</span> <span class="pre">'qid':</span> <span class="pre">'Q13955'},</span> <span class="pre">'basque':</span> <span class="pre">{'iso':</span> <span class="pre">'eu',</span> <span class="pre">'qid':</span> <span class="pre">'Q8752'},</span> <span class="pre">'bengali':</span> <span class="pre">{'iso':</span> <span class="pre">'bn',</span> <span class="pre">'qid':</span> <span class="pre">'Q9610'},</span> <span class="pre">'chinese':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'mandarin':</span> <span class="pre">{'iso':</span> <span class="pre">'zh',</span> <span class="pre">'qid':</span> <span class="pre">'Q727694'}}},</span> <span class="pre">'czech':</span> <span class="pre">{'iso':</span> <span class="pre">'cs',</span> <span class="pre">'qid':</span> <span class="pre">'Q9056'},</span> <span class="pre">'dagbani':</span> <span class="pre">{'iso':</span> <span class="pre">'dag',</span> <span class="pre">'qid':</span> <span class="pre">'Q32238'},</span> <span class="pre">'danish':</span> <span class="pre">{'iso':</span> <span class="pre">'da',</span> <span class="pre">'qid':</span> <span class="pre">'Q9035'},</span> <span class="pre">'english':</span> <span class="pre">{'iso':</span> <span class="pre">'en',</span> <span class="pre">'qid':</span> <span class="pre">'Q1860'},</span> <span class="pre">'esperanto':</span> <span class="pre">{'iso':</span> <span class="pre">'eo',</span> <span class="pre">'qid':</span> <span class="pre">'Q143'},</span> <span class="pre">'estonian':</span> <span class="pre">{'iso':</span> <span class="pre">'et',</span> <span class="pre">'qid':</span> <span class="pre">'Q9072'},</span> <span class="pre">'finnish':</span> <span class="pre">{'iso':</span> <span class="pre">'fi',</span> <span class="pre">'qid':</span> <span class="pre">'Q1412'},</span> <span class="pre">'french':</span> <span class="pre">{'iso':</span> <span class="pre">'fr',</span> <span class="pre">'qid':</span> <span class="pre">'Q150'},</span> <span class="pre">'german':</span> <span class="pre">{'iso':</span> <span class="pre">'de',</span> <span class="pre">'qid':</span> <span class="pre">'Q188'},</span> <span class="pre">'greek':</span> <span class="pre">{'iso':</span> <span class="pre">'el',</span> <span class="pre">'qid':</span> <span class="pre">'Q36510'},</span> <span class="pre">'hausa':</span> <span class="pre">{'iso':</span> <span class="pre">'ha',</span> <span class="pre">'qid':</span> <span class="pre">'Q56475'},</span> <span class="pre">'hebrew':</span> <span class="pre">{'iso':</span> <span class="pre">'he',</span> <span class="pre">'qid':</span> <span class="pre">'Q9288'},</span> <span class="pre">'hindustani':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'hindi':</span> <span class="pre">{'iso':</span> <span class="pre">'hi',</span> <span class="pre">'qid':</span> <span class="pre">'Q11051'},</span> <span class="pre">'urdu':</span> <span class="pre">{'iso':</span> <span class="pre">'ur',</span> <span class="pre">'qid':</span> <span class="pre">'Q11051'}}},</span> <span class="pre">'igbo':</span> <span class="pre">{'iso':</span> <span class="pre">'ig',</span> <span class="pre">'qid':</span> <span class="pre">'Q33578'},</span> <span class="pre">'indonesian':</span> <span class="pre">{'iso':</span> <span class="pre">'id',</span> <span class="pre">'qid':</span> <span class="pre">'Q9240'},</span> <span class="pre">'italian':</span> <span class="pre">{'iso':</span> <span class="pre">'it',</span> <span class="pre">'qid':</span> <span class="pre">'Q652'},</span> <span class="pre">'japanese':</span> <span class="pre">{'iso':</span> <span class="pre">'ja',</span> <span class="pre">'qid':</span> <span class="pre">'Q5287'},</span> <span class="pre">'korean':</span> <span class="pre">{'iso':</span> <span class="pre">'ko',</span> <span class="pre">'qid':</span> <span class="pre">'Q9176'},</span> <span class="pre">'kurmanji':</span> <span class="pre">{'iso':</span> <span class="pre">'ku',</span> <span class="pre">'qid':</span> <span class="pre">'Q36163'},</span> <span class="pre">'latin':</span> <span class="pre">{'iso':</span> <span class="pre">'la',</span> <span class="pre">'qid':</span> <span class="pre">'Q397'},</span> <span class="pre">'latvian':</span> <span class="pre">{'iso':</span> <span class="pre">'lv',</span> <span class="pre">'qid':</span> <span class="pre">'Q9078'},</span> <span class="pre">'malay':</span> <span class="pre">{'iso':</span> <span class="pre">'ms',</span> <span class="pre">'qid':</span> <span class="pre">'Q9237'},</span> <span class="pre">'malayalam':</span> <span class="pre">{'iso':</span> <span class="pre">'ml',</span> <span class="pre">'qid':</span> <span class="pre">'Q36236'},</span> <span class="pre">'norwegian':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'bokmål':</span> <span class="pre">{'iso':</span> <span class="pre">'nb',</span> <span class="pre">'qid':</span> <span class="pre">'Q25167'},</span> <span class="pre">'nynorsk':</span> <span class="pre">{'iso':</span> <span class="pre">'nn',</span> <span class="pre">'qid':</span> <span class="pre">'Q25164'}}},</span> <span class="pre">'persian':</span> <span class="pre">{'iso':</span> <span class="pre">'fa',</span> <span class="pre">'qid':</span> <span class="pre">'Q9168'},</span> <span class="pre">'pidgin':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'nigerian':</span> <span class="pre">{'iso':</span> <span class="pre">'pi',</span> <span class="pre">'qid':</span> <span class="pre">'Q33655'}}},</span> <span class="pre">'polish':</span> <span class="pre">{'iso':</span> <span class="pre">'pl',</span> <span class="pre">'qid':</span> <span class="pre">'Q809'},</span> <span class="pre">'portuguese':</span> <span class="pre">{'iso':</span> <span class="pre">'pt',</span> <span class="pre">'qid':</span> <span class="pre">'Q5146'},</span> <span class="pre">'punjabi':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'gurmukhi':</span> <span class="pre">{'iso':</span> <span class="pre">'pa',</span> <span class="pre">'qid':</span> <span class="pre">'Q58635'},</span> <span class="pre">'shahmukhi':</span> <span class="pre">{'iso':</span> <span class="pre">'pnb',</span> <span class="pre">'qid':</span> <span class="pre">'Q58635'}}},</span> <span class="pre">'russian':</span> <span class="pre">{'iso':</span> <span class="pre">'ru',</span> <span class="pre">'qid':</span> <span class="pre">'Q7737'},</span> <span class="pre">'sami':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'northern':</span> <span class="pre">{'iso':</span> <span class="pre">'se',</span> <span class="pre">'qid':</span> <span class="pre">'Q33947'}}},</span> <span class="pre">'slovak':</span> <span class="pre">{'iso':</span> <span class="pre">'sk',</span> <span class="pre">'qid':</span> <span class="pre">'Q9058'},</span> <span class="pre">'spanish':</span> <span class="pre">{'iso':</span> <span class="pre">'es',</span> <span class="pre">'qid':</span> <span class="pre">'Q1321'},</span> <span class="pre">'swahili':</span> <span class="pre">{'iso':</span> <span class="pre">'sw',</span> <span class="pre">'qid':</span> <span class="pre">'Q7838'},</span> <span class="pre">'swedish':</span> <span class="pre">{'iso':</span> <span class="pre">'sv',</span> <span class="pre">'qid':</span> <span class="pre">'Q9027'},</span> <span class="pre">'tajik':</span> <span class="pre">{'iso':</span> <span class="pre">'tg',</span> <span class="pre">'qid':</span> <span class="pre">'Q9260'},</span> <span class="pre">'tamil':</span> <span class="pre">{'iso':</span> <span class="pre">'ta',</span> <span class="pre">'qid':</span> <span class="pre">'Q5885'},</span> <span class="pre">'ukrainian':</span> <span class="pre">{'iso':</span> <span class="pre">'ua',</span> <span class="pre">'qid':</span> <span class="pre">'Q8798'},</span> <span class="pre">'yoruba':</span> <span class="pre">{'iso':</span> <span class="pre">'yo',</span> <span class="pre">'qid':</span> <span class="pre">'Q34311'}}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scribe_data/utils.html#format_sublanguage_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.format_sublanguage_name" title="Link to this definition"></a></dt>
+<dd><p>Formats the name of a sub-language by appending its main language
+in the format ‘SUB_LANG MAIN_LANG’. If the language is not a sub-language,
+the original language name is returned as-is.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>lang</strong><span class="classifier">str</span></dt><dd><p>The name of the language or sub-language to format.</p>
+</dd>
+<dt><strong>language_metadata</strong><span class="classifier">dict</span></dt><dd><p>The metadata containing information about main languages and their sub-languages.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>The formatted language name if it’s a sub-language (e.g., ‘Nynorsk Norwegian’).
+Otherwise the original name.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError: If the provided language or sub-language is not found.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.list_all_languages">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">list_all_languages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'arabic':</span> <span class="pre">{'iso':</span> <span class="pre">'ar',</span> <span class="pre">'qid':</span> <span class="pre">'Q13955'},</span> <span class="pre">'basque':</span> <span class="pre">{'iso':</span> <span class="pre">'eu',</span> <span class="pre">'qid':</span> <span class="pre">'Q8752'},</span> <span class="pre">'bengali':</span> <span class="pre">{'iso':</span> <span class="pre">'bn',</span> <span class="pre">'qid':</span> <span class="pre">'Q9610'},</span> <span class="pre">'chinese':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'mandarin':</span> <span class="pre">{'iso':</span> <span class="pre">'zh',</span> <span class="pre">'qid':</span> <span class="pre">'Q727694'}}},</span> <span class="pre">'czech':</span> <span class="pre">{'iso':</span> <span class="pre">'cs',</span> <span class="pre">'qid':</span> <span class="pre">'Q9056'},</span> <span class="pre">'dagbani':</span> <span class="pre">{'iso':</span> <span class="pre">'dag',</span> <span class="pre">'qid':</span> <span class="pre">'Q32238'},</span> <span class="pre">'danish':</span> <span class="pre">{'iso':</span> <span class="pre">'da',</span> <span class="pre">'qid':</span> <span class="pre">'Q9035'},</span> <span class="pre">'english':</span> <span class="pre">{'iso':</span> <span class="pre">'en',</span> <span class="pre">'qid':</span> <span class="pre">'Q1860'},</span> <span class="pre">'esperanto':</span> <span class="pre">{'iso':</span> <span class="pre">'eo',</span> <span class="pre">'qid':</span> <span class="pre">'Q143'},</span> <span class="pre">'estonian':</span> <span class="pre">{'iso':</span> <span class="pre">'et',</span> <span class="pre">'qid':</span> <span class="pre">'Q9072'},</span> <span class="pre">'finnish':</span> <span class="pre">{'iso':</span> <span class="pre">'fi',</span> <span class="pre">'qid':</span> <span class="pre">'Q1412'},</span> <span class="pre">'french':</span> <span class="pre">{'iso':</span> <span class="pre">'fr',</span> <span class="pre">'qid':</span> <span class="pre">'Q150'},</span> <span class="pre">'german':</span> <span class="pre">{'iso':</span> <span class="pre">'de',</span> <span class="pre">'qid':</span> <span class="pre">'Q188'},</span> <span class="pre">'greek':</span> <span class="pre">{'iso':</span> <span class="pre">'el',</span> <span class="pre">'qid':</span> <span class="pre">'Q36510'},</span> <span class="pre">'hausa':</span> <span class="pre">{'iso':</span> <span class="pre">'ha',</span> <span class="pre">'qid':</span> <span class="pre">'Q56475'},</span> <span class="pre">'hebrew':</span> <span class="pre">{'iso':</span> <span class="pre">'he',</span> <span class="pre">'qid':</span> <span class="pre">'Q9288'},</span> <span class="pre">'hindustani':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'hindi':</span> <span class="pre">{'iso':</span> <span class="pre">'hi',</span> <span class="pre">'qid':</span> <span class="pre">'Q11051'},</span> <span class="pre">'urdu':</span> <span class="pre">{'iso':</span> <span class="pre">'ur',</span> <span class="pre">'qid':</span> <span class="pre">'Q11051'}}},</span> <span class="pre">'igbo':</span> <span class="pre">{'iso':</span> <span class="pre">'ig',</span> <span class="pre">'qid':</span> <span class="pre">'Q33578'},</span> <span class="pre">'indonesian':</span> <span class="pre">{'iso':</span> <span class="pre">'id',</span> <span class="pre">'qid':</span> <span class="pre">'Q9240'},</span> <span class="pre">'italian':</span> <span class="pre">{'iso':</span> <span class="pre">'it',</span> <span class="pre">'qid':</span> <span class="pre">'Q652'},</span> <span class="pre">'japanese':</span> <span class="pre">{'iso':</span> <span class="pre">'ja',</span> <span class="pre">'qid':</span> <span class="pre">'Q5287'},</span> <span class="pre">'korean':</span> <span class="pre">{'iso':</span> <span class="pre">'ko',</span> <span class="pre">'qid':</span> <span class="pre">'Q9176'},</span> <span class="pre">'kurmanji':</span> <span class="pre">{'iso':</span> <span class="pre">'ku',</span> <span class="pre">'qid':</span> <span class="pre">'Q36163'},</span> <span class="pre">'latin':</span> <span class="pre">{'iso':</span> <span class="pre">'la',</span> <span class="pre">'qid':</span> <span class="pre">'Q397'},</span> <span class="pre">'latvian':</span> <span class="pre">{'iso':</span> <span class="pre">'lv',</span> <span class="pre">'qid':</span> <span class="pre">'Q9078'},</span> <span class="pre">'malay':</span> <span class="pre">{'iso':</span> <span class="pre">'ms',</span> <span class="pre">'qid':</span> <span class="pre">'Q9237'},</span> <span class="pre">'malayalam':</span> <span class="pre">{'iso':</span> <span class="pre">'ml',</span> <span class="pre">'qid':</span> <span class="pre">'Q36236'},</span> <span class="pre">'norwegian':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'bokmål':</span> <span class="pre">{'iso':</span> <span class="pre">'nb',</span> <span class="pre">'qid':</span> <span class="pre">'Q25167'},</span> <span class="pre">'nynorsk':</span> <span class="pre">{'iso':</span> <span class="pre">'nn',</span> <span class="pre">'qid':</span> <span class="pre">'Q25164'}}},</span> <span class="pre">'persian':</span> <span class="pre">{'iso':</span> <span class="pre">'fa',</span> <span class="pre">'qid':</span> <span class="pre">'Q9168'},</span> <span class="pre">'pidgin':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'nigerian':</span> <span class="pre">{'iso':</span> <span class="pre">'pi',</span> <span class="pre">'qid':</span> <span class="pre">'Q33655'}}},</span> <span class="pre">'polish':</span> <span class="pre">{'iso':</span> <span class="pre">'pl',</span> <span class="pre">'qid':</span> <span class="pre">'Q809'},</span> <span class="pre">'portuguese':</span> <span class="pre">{'iso':</span> <span class="pre">'pt',</span> <span class="pre">'qid':</span> <span class="pre">'Q5146'},</span> <span class="pre">'punjabi':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'gurmukhi':</span> <span class="pre">{'iso':</span> <span class="pre">'pa',</span> <span class="pre">'qid':</span> <span class="pre">'Q58635'},</span> <span class="pre">'shahmukhi':</span> <span class="pre">{'iso':</span> <span class="pre">'pnb',</span> <span class="pre">'qid':</span> <span class="pre">'Q58635'}}},</span> <span class="pre">'russian':</span> <span class="pre">{'iso':</span> <span class="pre">'ru',</span> <span class="pre">'qid':</span> <span class="pre">'Q7737'},</span> <span class="pre">'sami':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'northern':</span> <span class="pre">{'iso':</span> <span class="pre">'se',</span> <span class="pre">'qid':</span> <span class="pre">'Q33947'}}},</span> <span class="pre">'slovak':</span> <span class="pre">{'iso':</span> <span class="pre">'sk',</span> <span class="pre">'qid':</span> <span class="pre">'Q9058'},</span> <span class="pre">'spanish':</span> <span class="pre">{'iso':</span> <span class="pre">'es',</span> <span class="pre">'qid':</span> <span class="pre">'Q1321'},</span> <span class="pre">'swahili':</span> <span class="pre">{'iso':</span> <span class="pre">'sw',</span> <span class="pre">'qid':</span> <span class="pre">'Q7838'},</span> <span class="pre">'swedish':</span> <span class="pre">{'iso':</span> <span class="pre">'sv',</span> <span class="pre">'qid':</span> <span class="pre">'Q9027'},</span> <span class="pre">'tajik':</span> <span class="pre">{'iso':</span> <span class="pre">'tg',</span> <span class="pre">'qid':</span> <span class="pre">'Q9260'},</span> <span class="pre">'tamil':</span> <span class="pre">{'iso':</span> <span class="pre">'ta',</span> <span class="pre">'qid':</span> <span class="pre">'Q5885'},</span> <span class="pre">'ukrainian':</span> <span class="pre">{'iso':</span> <span class="pre">'ua',</span> <span class="pre">'qid':</span> <span class="pre">'Q8798'},</span> <span class="pre">'yoruba':</span> <span class="pre">{'iso':</span> <span class="pre">'yo',</span> <span class="pre">'qid':</span> <span class="pre">'Q34311'}}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scribe_data/utils.html#list_all_languages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.list_all_languages" title="Link to this definition"></a></dt>
+<dd><p>Returns a sorted list of all languages from the provided metadata dictionary, including sub-languages.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.list_languages_with_metadata_for_data_type">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">list_languages_with_metadata_for_data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'arabic':</span> <span class="pre">{'iso':</span> <span class="pre">'ar',</span> <span class="pre">'qid':</span> <span class="pre">'Q13955'},</span> <span class="pre">'basque':</span> <span class="pre">{'iso':</span> <span class="pre">'eu',</span> <span class="pre">'qid':</span> <span class="pre">'Q8752'},</span> <span class="pre">'bengali':</span> <span class="pre">{'iso':</span> <span class="pre">'bn',</span> <span class="pre">'qid':</span> <span class="pre">'Q9610'},</span> <span class="pre">'chinese':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'mandarin':</span> <span class="pre">{'iso':</span> <span class="pre">'zh',</span> <span class="pre">'qid':</span> <span class="pre">'Q727694'}}},</span> <span class="pre">'czech':</span> <span class="pre">{'iso':</span> <span class="pre">'cs',</span> <span class="pre">'qid':</span> <span class="pre">'Q9056'},</span> <span class="pre">'dagbani':</span> <span class="pre">{'iso':</span> <span class="pre">'dag',</span> <span class="pre">'qid':</span> <span class="pre">'Q32238'},</span> <span class="pre">'danish':</span> <span class="pre">{'iso':</span> <span class="pre">'da',</span> <span class="pre">'qid':</span> <span class="pre">'Q9035'},</span> <span class="pre">'english':</span> <span class="pre">{'iso':</span> <span class="pre">'en',</span> <span class="pre">'qid':</span> <span class="pre">'Q1860'},</span> <span class="pre">'esperanto':</span> <span class="pre">{'iso':</span> <span class="pre">'eo',</span> <span class="pre">'qid':</span> <span class="pre">'Q143'},</span> <span class="pre">'estonian':</span> <span class="pre">{'iso':</span> <span class="pre">'et',</span> <span class="pre">'qid':</span> <span class="pre">'Q9072'},</span> <span class="pre">'finnish':</span> <span class="pre">{'iso':</span> <span class="pre">'fi',</span> <span class="pre">'qid':</span> <span class="pre">'Q1412'},</span> <span class="pre">'french':</span> <span class="pre">{'iso':</span> <span class="pre">'fr',</span> <span class="pre">'qid':</span> <span class="pre">'Q150'},</span> <span class="pre">'german':</span> <span class="pre">{'iso':</span> <span class="pre">'de',</span> <span class="pre">'qid':</span> <span class="pre">'Q188'},</span> <span class="pre">'greek':</span> <span class="pre">{'iso':</span> <span class="pre">'el',</span> <span class="pre">'qid':</span> <span class="pre">'Q36510'},</span> <span class="pre">'hausa':</span> <span class="pre">{'iso':</span> <span class="pre">'ha',</span> <span class="pre">'qid':</span> <span class="pre">'Q56475'},</span> <span class="pre">'hebrew':</span> <span class="pre">{'iso':</span> <span class="pre">'he',</span> <span class="pre">'qid':</span> <span class="pre">'Q9288'},</span> <span class="pre">'hindustani':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'hindi':</span> <span class="pre">{'iso':</span> <span class="pre">'hi',</span> <span class="pre">'qid':</span> <span class="pre">'Q11051'},</span> <span class="pre">'urdu':</span> <span class="pre">{'iso':</span> <span class="pre">'ur',</span> <span class="pre">'qid':</span> <span class="pre">'Q11051'}}},</span> <span class="pre">'igbo':</span> <span class="pre">{'iso':</span> <span class="pre">'ig',</span> <span class="pre">'qid':</span> <span class="pre">'Q33578'},</span> <span class="pre">'indonesian':</span> <span class="pre">{'iso':</span> <span class="pre">'id',</span> <span class="pre">'qid':</span> <span class="pre">'Q9240'},</span> <span class="pre">'italian':</span> <span class="pre">{'iso':</span> <span class="pre">'it',</span> <span class="pre">'qid':</span> <span class="pre">'Q652'},</span> <span class="pre">'japanese':</span> <span class="pre">{'iso':</span> <span class="pre">'ja',</span> <span class="pre">'qid':</span> <span class="pre">'Q5287'},</span> <span class="pre">'korean':</span> <span class="pre">{'iso':</span> <span class="pre">'ko',</span> <span class="pre">'qid':</span> <span class="pre">'Q9176'},</span> <span class="pre">'kurmanji':</span> <span class="pre">{'iso':</span> <span class="pre">'ku',</span> <span class="pre">'qid':</span> <span class="pre">'Q36163'},</span> <span class="pre">'latin':</span> <span class="pre">{'iso':</span> <span class="pre">'la',</span> <span class="pre">'qid':</span> <span class="pre">'Q397'},</span> <span class="pre">'latvian':</span> <span class="pre">{'iso':</span> <span class="pre">'lv',</span> <span class="pre">'qid':</span> <span class="pre">'Q9078'},</span> <span class="pre">'malay':</span> <span class="pre">{'iso':</span> <span class="pre">'ms',</span> <span class="pre">'qid':</span> <span class="pre">'Q9237'},</span> <span class="pre">'malayalam':</span> <span class="pre">{'iso':</span> <span class="pre">'ml',</span> <span class="pre">'qid':</span> <span class="pre">'Q36236'},</span> <span class="pre">'norwegian':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'bokmål':</span> <span class="pre">{'iso':</span> <span class="pre">'nb',</span> <span class="pre">'qid':</span> <span class="pre">'Q25167'},</span> <span class="pre">'nynorsk':</span> <span class="pre">{'iso':</span> <span class="pre">'nn',</span> <span class="pre">'qid':</span> <span class="pre">'Q25164'}}},</span> <span class="pre">'persian':</span> <span class="pre">{'iso':</span> <span class="pre">'fa',</span> <span class="pre">'qid':</span> <span class="pre">'Q9168'},</span> <span class="pre">'pidgin':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'nigerian':</span> <span class="pre">{'iso':</span> <span class="pre">'pi',</span> <span class="pre">'qid':</span> <span class="pre">'Q33655'}}},</span> <span class="pre">'polish':</span> <span class="pre">{'iso':</span> <span class="pre">'pl',</span> <span class="pre">'qid':</span> <span class="pre">'Q809'},</span> <span class="pre">'portuguese':</span> <span class="pre">{'iso':</span> <span class="pre">'pt',</span> <span class="pre">'qid':</span> <span class="pre">'Q5146'},</span> <span class="pre">'punjabi':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'gurmukhi':</span> <span class="pre">{'iso':</span> <span class="pre">'pa',</span> <span class="pre">'qid':</span> <span class="pre">'Q58635'},</span> <span class="pre">'shahmukhi':</span> <span class="pre">{'iso':</span> <span class="pre">'pnb',</span> <span class="pre">'qid':</span> <span class="pre">'Q58635'}}},</span> <span class="pre">'russian':</span> <span class="pre">{'iso':</span> <span class="pre">'ru',</span> <span class="pre">'qid':</span> <span class="pre">'Q7737'},</span> <span class="pre">'sami':</span> <span class="pre">{'sub_languages':</span> <span class="pre">{'northern':</span> <span class="pre">{'iso':</span> <span class="pre">'se',</span> <span class="pre">'qid':</span> <span class="pre">'Q33947'}}},</span> <span class="pre">'slovak':</span> <span class="pre">{'iso':</span> <span class="pre">'sk',</span> <span class="pre">'qid':</span> <span class="pre">'Q9058'},</span> <span class="pre">'spanish':</span> <span class="pre">{'iso':</span> <span class="pre">'es',</span> <span class="pre">'qid':</span> <span class="pre">'Q1321'},</span> <span class="pre">'swahili':</span> <span class="pre">{'iso':</span> <span class="pre">'sw',</span> <span class="pre">'qid':</span> <span class="pre">'Q7838'},</span> <span class="pre">'swedish':</span> <span class="pre">{'iso':</span> <span class="pre">'sv',</span> <span class="pre">'qid':</span> <span class="pre">'Q9027'},</span> <span class="pre">'tajik':</span> <span class="pre">{'iso':</span> <span class="pre">'tg',</span> <span class="pre">'qid':</span> <span class="pre">'Q9260'},</span> <span class="pre">'tamil':</span> <span class="pre">{'iso':</span> <span class="pre">'ta',</span> <span class="pre">'qid':</span> <span class="pre">'Q5885'},</span> <span class="pre">'ukrainian':</span> <span class="pre">{'iso':</span> <span class="pre">'ua',</span> <span class="pre">'qid':</span> <span class="pre">'Q8798'},</span> <span class="pre">'yoruba':</span> <span class="pre">{'iso':</span> <span class="pre">'yo',</span> <span class="pre">'qid':</span> <span class="pre">'Q34311'}}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scribe_data/utils.html#list_languages_with_metadata_for_data_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.list_languages_with_metadata_for_data_type" title="Link to this definition"></a></dt>
+<dd><p>Returns a sorted list of languages and their metadata (name, iso, qid) for a specific data type.
+The list includes sub-languages where applicable.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scribe_data.utils.camel_to_snake">
+<span class="sig-prename descclassname"><span class="pre">scribe_data.utils.</span></span><span class="sig-name descname"><span class="pre">camel_to_snake</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/scribe_data/utils.html#camel_to_snake"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scribe_data.utils.camel_to_snake" title="Link to this definition"></a></dt>
+<dd><p>Convert camelCase to snake_case.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cli.html" class="btn btn-neutral float-left" title="cli/" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../notes.html" class="btn btn-neutral float-right" title="Contributing to Scribe-Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Scribe-Data developers (GPL 3.0 License).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,563 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scribe_data.wikipedia.process_wiki &mdash; Scribe-Data 3.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=18e5adab" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/ScribeFavicon.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3eb8911e"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/ScribeDataLogo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../scribe_data/index.html">Scribe-Data</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes.html">Contributing to Scribe-Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes.html#license">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Scribe-Data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scribe_data.wikipedia.process_wiki</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scribe_data.wikipedia.process_wiki</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for cleaning Wikipedia based corpuses for autosuggestion generation.</span>
+
+<span class="sd">.. raw:: html</span>
+
+<span class="sd">    &lt;!--</span>
+<span class="sd">    * Copyright (C) 2024 Scribe</span>
+<span class="sd">    *</span>
+<span class="sd">    * This program is free software: you can redistribute it and/or modify</span>
+<span class="sd">    * it under the terms of the GNU General Public License as published by</span>
+<span class="sd">    * the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">    * (at your option) any later version.</span>
+<span class="sd">    *</span>
+<span class="sd">    * This program is distributed in the hope that it will be useful,</span>
+<span class="sd">    * but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">    * GNU General Public License for more details.</span>
+<span class="sd">    *</span>
+<span class="sd">    * You should have received a copy of the GNU General Public License</span>
+<span class="sd">    * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
+<span class="sd">    --&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">urllib.error</span> <span class="kn">import</span> <span class="n">HTTPError</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">regex</span>
+<span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">scribe_data.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DEFAULT_JSON_EXPORT_DIR</span><span class="p">,</span>
+    <span class="n">get_language_qid</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">scribe_data.wikidata.wikidata_utils</span> <span class="kn">import</span> <span class="n">sparql</span>
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Passing&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="clean">
+<a class="viewcode-back" href="../../../scribe_data/wikipedia/process_wiki.html#scribe_data.wikipedia.process_wiki.clean">[docs]</a>
+<span class="k">def</span> <span class="nf">clean</span><span class="p">(</span>
+    <span class="n">texts</span><span class="p">,</span>
+    <span class="n">language</span><span class="o">=</span><span class="s2">&quot;English&quot;</span><span class="p">,</span>
+    <span class="n">remove_words</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">sample_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cleans text body to prepare it for analysis.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        texts : str or list</span>
+<span class="sd">            The texts to be cleaned and tokenized.</span>
+
+<span class="sd">        language : string (default=en)</span>
+<span class="sd">            The language of the texts being cleaned.</span>
+
+<span class="sd">        remove_words : str or list (default=None)</span>
+<span class="sd">            Strings that should be removed from the text body.</span>
+
+<span class="sd">        sample_size : float (default=1)</span>
+<span class="sd">            The amount of data to be randomly sampled.</span>
+
+<span class="sd">        verbose : bool (default=True)</span>
+<span class="sd">            Whether to show a tqdm progress bar for the process.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        cleaned_texts : list</span>
+<span class="sd">            The texts formatted for analysis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">texts</span><span class="p">]</span>
+
+    <span class="n">language</span> <span class="o">=</span> <span class="n">language</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">remove_words</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">words_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="n">remove_words</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">remove_words</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">words_to_remove</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Add words that are common in Wikipedia article markdown.</span>
+    <span class="n">words_to_remove</span> <span class="o">+=</span> <span class="p">[</span>
+        <span class="s2">&quot;nbsp&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ISBN&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Chr&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nr&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;PAGENAME&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;REDIRECT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;REDIRECTION&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;WEITERLEITUNG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SORTIERUNG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;REDIRECIONAMENTO&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;REDIRECCIÓN&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;OMDIRIGERING&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;VOLUME&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;fontsizeS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;RINVIA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;LINEAR&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DateFormat&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pxlink&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ddmmyyyy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TimeAxis&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ScaleMajor&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ScaleMinor&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;PlotData&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;PlotArea&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BarData&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BackgroundColors&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AlignBars&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TextData&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ImageSize&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;LepIndex&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ITIS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;INSEE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;WCSP&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;NODC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;colorblack&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;colorbars&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alignright&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alignleft&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hmin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hmax&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bgcolor&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;centerpx&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;px&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cdot&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;UTC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;EuroMed&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;msg&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;WPProject&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;WPProjekt&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">words_to_remove</span> <span class="o">+=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">sample_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">idxs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">))</span>
+        <span class="n">selected_idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">idxs</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">sample_size</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)),</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Randomly sampling </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">selected_idxs</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">language</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2"> Wikipedia articles...&quot;</span>
+        <span class="p">)</span>
+        <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">texts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">selected_idxs</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Random sampling finished.&quot;</span><span class="p">)</span>
+
+    <span class="n">cleaned_texts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Articles cleaned&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;articles&quot;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">verbose</span><span class="p">):</span>
+        <span class="c1"># Remove all websites and new line markers.</span>
+        <span class="n">websites</span> <span class="o">=</span> <span class="p">[</span><span class="n">word</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">if</span> <span class="n">word</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;http&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">websites</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Remove all text between parentheses, brackets, braces and multiple equal signs.</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\([^)]*\)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[.*?\]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;[^&gt;]+&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;===[^&gt;]+===&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;==[^&gt;]+==&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;{{[^&gt;]+}}&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;{[^&gt;]+}&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+
+        <span class="c1"># Remove numbers and symbols.</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">t</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">isdigit</span><span class="p">())</span>
+
+        <span class="n">symbols_to_remove</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;!&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;@&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;#&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;$&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;%&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;^&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&amp;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;*&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;–&quot;</span><span class="p">,</span>
+            <span class="c1"># &quot;-&quot;, we do hyphenated words later</span>
+            <span class="s2">&quot;_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;+&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;=&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;`&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;~&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;|&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;:&quot;</span><span class="p">,</span>
+            <span class="s1">&#39;&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;„&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;“&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;?&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;/&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;,&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;·&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;«&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;»&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;(&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;[&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;]&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;{&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="n">wikipedia_namespaces</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="c1"># English</span>
+            <span class="s2">&quot;Talk:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;User:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Wikipedia:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;File:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;MediaWiki:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Template:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Help:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Category:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Portal:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Draft:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Topic:&quot;</span><span class="p">,</span>
+            <span class="c1"># French</span>
+            <span class="s2">&quot;Discussion:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Utilisateur:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Catégorie:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Aide:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Portail:&quot;</span><span class="p">,</span>
+            <span class="c1"># German</span>
+            <span class="s2">&quot;Diskussion:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Benutzer:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Kategorie:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Hilfe:&quot;</span><span class="p">,</span>
+            <span class="c1"># Italian</span>
+            <span class="s2">&quot;Discussioni:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Discussione:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Utente:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Aiuto:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Categoria:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Portale:&quot;</span><span class="p">,</span>
+            <span class="c1"># Portuguese</span>
+            <span class="s2">&quot;Wikipédia:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Discussão:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Usuário(a):&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Ficheiro:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Predefinição:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Ajuda:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Tópico:&quot;</span><span class="p">,</span>
+            <span class="c1"># Russian</span>
+            <span class="s2">&quot;Обсуждение:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Участник:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Википедия:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Категория:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Портал:&quot;</span><span class="p">,</span>
+            <span class="c1"># Spanish</span>
+            <span class="s2">&quot;Discusión:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Usuario:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Archivo:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Plantilla:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Ayuda:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Categoría:&quot;</span><span class="p">,</span>
+            <span class="c1"># Swedish</span>
+            <span class="s2">&quot;Diskussion:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Användare:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Kategori&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Fil:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Mall:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Hjälp:&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Remove namespaces before symbols as &quot;:&quot; is in the symbols.</span>
+        <span class="n">wikipedia_namespaces</span> <span class="o">+=</span> <span class="n">symbols_to_remove</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">wikipedia_namespaces</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;russian&quot;</span><span class="p">:</span>
+            <span class="c1"># Remove Latin characters that aren&#39;t in Cyrillic.</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[+/p</span><span class="si">{Latin}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+
+        <span class="c1"># Remove all spaces that are larger than one in length.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span>
+            <span class="mi">25</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="p">):</span>  <span class="c1"># loop backwards to assure that smaller spaces aren&#39;t made</span>
+            <span class="n">large_space</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">large_space</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">large_space</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">]:</span>
+            <span class="n">cleaned_texts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="n">single_letter_words_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;french&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;à&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;german&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;à&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;italian&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;è&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;portuguese&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;é&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;russian&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;а&quot;</span><span class="p">,</span> <span class="s2">&quot;б&quot;</span><span class="p">,</span> <span class="s2">&quot;в&quot;</span><span class="p">,</span> <span class="s2">&quot;ж&quot;</span><span class="p">,</span> <span class="s2">&quot;и&quot;</span><span class="p">,</span> <span class="s2">&quot;к&quot;</span><span class="p">,</span> <span class="s2">&quot;о&quot;</span><span class="p">,</span> <span class="s2">&quot;с&quot;</span><span class="p">,</span> <span class="s2">&quot;у&quot;</span><span class="p">,</span> <span class="s2">&quot;я&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;spanish&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;swedish&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;à&quot;</span><span class="p">,</span> <span class="s2">&quot;å&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;ö&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="p">[</span>
+            <span class="n">w</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">single_letter_words_dict</span><span class="p">[</span><span class="n">language</span><span class="p">])</span>
+            <span class="ow">and</span> <span class="n">w</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">words_to_remove</span>
+            <span class="ow">and</span> <span class="s2">&quot;nbsp&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">w</span>
+            <span class="ow">and</span> <span class="s2">&quot;-&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">w</span>
+            <span class="ow">and</span> <span class="s2">&quot;Wikipedia&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">w</span>
+            <span class="ow">and</span> <span class="n">w</span> <span class="o">!=</span> <span class="s2">&quot;-&quot;</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span>
+            <span class="n">cleaned_texts</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Articles checked&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;articles&quot;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">verbose</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">text</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
+    <span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="gen_autosuggestions">
+<a class="viewcode-back" href="../../../scribe_data/wikipedia/process_wiki.html#scribe_data.wikipedia.process_wiki.gen_autosuggestions">[docs]</a>
+<span class="k">def</span> <span class="nf">gen_autosuggestions</span><span class="p">(</span>
+    <span class="n">text_corpus</span><span class="p">,</span>
+    <span class="n">language</span><span class="o">=</span><span class="s2">&quot;English&quot;</span><span class="p">,</span>
+    <span class="n">num_words</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">ignore_words</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">update_local_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a dictionary of common words (keys) and those that most commonly follow them (values).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        text_corpus : list</span>
+<span class="sd">            The Wikipedia texts formatted for word relation extraction.</span>
+
+<span class="sd">        language : string (default=en)</span>
+<span class="sd">            The language autosuggestions are being generated for.</span>
+
+<span class="sd">        num_words: int (default=500)</span>
+<span class="sd">            The number of words that autosuggestions should be generated for.</span>
+
+<span class="sd">        ignore_words : str or list (default=None)</span>
+<span class="sd">            Strings that should be removed from the text body.</span>
+
+<span class="sd">        update_local_data : bool (default=False)</span>
+<span class="sd">            Saves the created dictionaries as JSONs in the target directories.</span>
+
+<span class="sd">        verbose : bool (default=True)</span>
+<span class="sd">            Whether to show a tqdm progress bar for the process.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        Autosuggestions dictionaries for common words are saved locally or uploaded to Scribe apps.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">counter_obj</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">text_corpus</span><span class="p">))</span>
+
+    <span class="n">top_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">counter_obj</span><span class="o">.</span><span class="n">most_common</span><span class="p">()][:</span><span class="n">num_words</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ignore_words</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">words_to_ignore</span> <span class="o">=</span> <span class="p">[</span><span class="n">ignore_words</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">ignore_words</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">words_to_ignore</span> <span class="o">+=</span> <span class="p">[]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Querying profanities to remove from suggestions.&quot;</span><span class="p">)</span>
+    <span class="c1"># First format the lines into a multi-line string and then pass this to SPARQLWrapper.</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+        <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;query_profanity.sparql&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">query_lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_lines</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+        <span class="s2">&quot;LANGUAGE_QID&quot;</span><span class="p">,</span> <span class="n">get_language_qid</span><span class="p">(</span><span class="n">language</span><span class="o">=</span><span class="n">language</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">sparql</span><span class="o">.</span><span class="n">setQuery</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">sparql</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HTTPError with query_profanity.sparql: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">profanities</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">results</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nothing returned by the WDQS server for query_profanity.sparql&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Subset the returned JSON and the individual results before saving.</span>
+        <span class="n">query_results</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">][</span><span class="s2">&quot;bindings&quot;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
+
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">query_results</span><span class="p">:</span>  <span class="c1"># query_results is also a list</span>
+            <span class="n">r_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+            <span class="n">profanities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_dict</span><span class="p">[</span><span class="s2">&quot;lemma&quot;</span><span class="p">])</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Queried </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">profanities</span><span class="p">)</span><span class="si">}</span><span class="s2"> words to be removed from autosuggest options.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">autosuggest_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span>
+        <span class="n">top_words</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Autosuggestions generated&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;word&quot;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">verbose</span>
+    <span class="p">):</span>
+        <span class="n">words_after_w</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">[</span><span class="n">tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">text</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">if</span> <span class="n">w</span> <span class="o">==</span> <span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">text_corpus</span>
+        <span class="p">]</span>
+
+        <span class="n">flat_words_after_w</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">words_after_w</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span>
+
+        <span class="n">autosuggestions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">Counter</span><span class="p">(</span><span class="n">flat_words_after_w</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">w</span>
+                <span class="ow">and</span> <span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">w</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">profanities</span>
+                <span class="ow">and</span> <span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">words_to_ignore</span>
+                <span class="ow">and</span> <span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>  <span class="c1"># no upper case suggestions</span>
+                <span class="c1"># Lots of detailed articles on WWII on Wikipedia.</span>
+                <span class="ow">and</span> <span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;nazi&quot;</span>
+                <span class="ow">and</span> <span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;наци&quot;</span>
+            <span class="p">):</span>
+                <span class="n">autosuggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">autosuggestions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="n">autosuggest_dict</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">autosuggestions</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Autosuggestions for </span><span class="si">{</span><span class="n">language</span><span class="si">}</span><span class="s2"> generated.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">update_local_data</span><span class="p">:</span>
+        <span class="n">path_to_formatted_data</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="n">DEFAULT_JSON_EXPORT_DIR</span><span class="p">)</span> <span class="o">/</span> <span class="n">language</span> <span class="o">/</span> <span class="s2">&quot;autosuggestions.json&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+            <span class="n">path_to_formatted_data</span><span class="p">,</span>
+            <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+            <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">autosuggest_dict</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Autosuggestions for </span><span class="si">{</span><span class="n">language</span><span class="si">}</span><span class="s2"> generated and saved to &#39;</span><span class="si">{</span><span class="n">path_to_formatted_data</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">autosuggest_dict</span>
+
+    <span class="k">return</span> <span class="n">autosuggest_dict</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Scribe-Data developers (GPL 3.0 License).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

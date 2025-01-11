@@ -1,0 +1,529 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scribe_data.wikidata.check_query.check &mdash; Scribe-Data 3.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=18e5adab" />
+
+  
+    <link rel="shortcut icon" href="../../../../_static/ScribeFavicon.ico"/>
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3eb8911e"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html">
+            
+              <img src="../../../../_static/ScribeDataLogo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scribe_data/index.html">Scribe-Data</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Contributing to Scribe-Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html#license">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Scribe-Data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scribe_data.wikidata.check_query.check</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scribe_data.wikidata.check_query.check</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Command line tool for testing SPARQl queries against an endpoint.</span>
+
+<span class="sd">.. raw:: html</span>
+
+<span class="sd">    &lt;!--</span>
+<span class="sd">    * Copyright (C) 2024 Scribe</span>
+<span class="sd">    *</span>
+<span class="sd">    * This program is free software: you can redistribute it and/or modify</span>
+<span class="sd">    * it under the terms of the GNU General Public License as published by</span>
+<span class="sd">    * the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">    * (at your option) any later version.</span>
+<span class="sd">    *</span>
+<span class="sd">    * This program is distributed in the hope that it will be useful,</span>
+<span class="sd">    * but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">    * GNU General Public License for more details.</span>
+<span class="sd">    *</span>
+<span class="sd">    * You should have received a copy of the GNU General Public License</span>
+<span class="sd">    * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
+<span class="sd">    --&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">urllib.request</span>
+<span class="kn">from</span> <span class="nn">http</span> <span class="kn">import</span> <span class="n">HTTPStatus</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">urllib.error</span> <span class="kn">import</span> <span class="n">HTTPError</span>
+
+<span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">scribe_data.wikidata.check_query.query</span> <span class="kn">import</span> <span class="n">QueryExecutionException</span><span class="p">,</span> <span class="n">QueryFile</span>
+<span class="kn">from</span> <span class="nn">scribe_data.wikidata.check_query.sparql</span> <span class="kn">import</span> <span class="n">execute</span><span class="p">,</span> <span class="n">sparql_context</span>
+
+<span class="n">EXIT_SUCCESS</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">EXIT_FAILURE</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">PROJECT_ROOT</span> <span class="o">=</span> <span class="s2">&quot;Scribe-Data&quot;</span>
+
+
+<div class="viewcode-block" id="ping">
+<a class="viewcode-back" href="../../../../scribe_data/wikidata/check_query/check.html#scribe_data.wikidata.check_query.check.ping">[docs]</a>
+<span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Test if a URL is reachable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        url : str</span>
+<span class="sd">            The URL to test.</span>
+
+<span class="sd">        timeout : int</span>
+<span class="sd">            The maximum number of seconds to wait for a reply.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        bool : True if connectivity is established or False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">HTTPError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="all_queries">
+<a class="viewcode-back" href="../../../../scribe_data/wikidata/check_query/check.html#scribe_data.wikidata.check_query.check.all_queries">[docs]</a>
+<span class="k">def</span> <span class="nf">all_queries</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">QueryFile</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    All the SPARQL queries in, and below, &#39;Scribe-Data/&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        list[QueryFile] : the SPARQL query files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parts</span>
+    <span class="n">prj_root_idx</span> <span class="o">=</span> <span class="n">parts</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">PROJECT_ROOT</span><span class="p">)</span>
+    <span class="n">prj_root</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="o">*</span><span class="n">parts</span><span class="p">[:</span> <span class="n">prj_root_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
+
+    <span class="n">queries</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QueryFile</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">prj_root</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.sparql&quot;</span><span class="p">:</span>
+                <span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QueryFile</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">queries</span></div>
+
+
+
+<div class="viewcode-block" id="changed_queries">
+<a class="viewcode-back" href="../../../../scribe_data/wikidata/check_query/check.html#scribe_data.wikidata.check_query.check.changed_queries">[docs]</a>
+<span class="k">def</span> <span class="nf">changed_queries</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">QueryFile</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find all the SPARQL queries that have changed.</span>
+
+<span class="sd">    Includes new queries.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        Optional[list[QueryFile]] : list of changed/new SPARQL queries or None if there&#39;s an error.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="p">(</span>
+            <span class="s2">&quot;git&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;--short&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+        <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+        <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="n">EXIT_SUCCESS</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">changed_files</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">norm_line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">norm_line</span> <span class="o">:=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="p">]</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">QueryFile</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span> <span class="k">for</span> <span class="n">fpath</span> <span class="ow">in</span> <span class="n">changed_files</span> <span class="k">if</span> <span class="n">fpath</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.sparql&quot;</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="check_sparql_file">
+<a class="viewcode-back" href="../../../../scribe_data/wikidata/check_query/check.html#scribe_data.wikidata.check_query.check.check_sparql_file">[docs]</a>
+<span class="k">def</span> <span class="nf">check_sparql_file</span><span class="p">(</span><span class="n">fpath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check meta information of SPARQL query file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        fpath : str</span>
+<span class="sd">            The file to validate.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        Path : the validated file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentTypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not a valid file path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;.sparql&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentTypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> does not have a &#39;.sparql&#39; extension&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">path</span></div>
+
+
+
+<div class="viewcode-block" id="check_positive_int">
+<a class="viewcode-back" href="../../../../scribe_data/wikidata/check_query/check.html#scribe_data.wikidata.check_query.check.check_positive_int">[docs]</a>
+<span class="k">def</span> <span class="nf">check_positive_int</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">err_msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ensure &#39;value&#39; is a positive number.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        value : str</span>
+<span class="sd">            The value to be validated.</span>
+
+<span class="sd">        err_msg : str</span>
+<span class="sd">            Used when value fails validation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        int : the validated number.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">        argparse.ArgumentTypeError</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+        <span class="n">number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">number</span>
+
+    <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentTypeError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_limit">
+<a class="viewcode-back" href="../../../../scribe_data/wikidata/check_query/check.html#scribe_data.wikidata.check_query.check.check_limit">[docs]</a>
+<span class="k">def</span> <span class="nf">check_limit</span><span class="p">(</span><span class="n">limit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the &#39;limit&#39; argument.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        limit : str</span>
+<span class="sd">            The LIMIT to be validated.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        int : the validated LIMIT.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">        argparse.ArgumentTypeError</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">check_positive_int</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="s2">&quot;LIMIT must be an integer of value 1 or greater.&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_timeout">
+<a class="viewcode-back" href="../../../../scribe_data/wikidata/check_query/check.html#scribe_data.wikidata.check_query.check.check_timeout">[docs]</a>
+<span class="k">def</span> <span class="nf">check_timeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate the &#39;timeout&#39; argument.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        timeout : str</span>
+<span class="sd">            The timeout to be validated.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        int : the validated timeout.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">        argparse.ArgumentTypeError</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">check_positive_int</span><span class="p">(</span>
+        <span class="n">timeout</span><span class="p">,</span> <span class="s2">&quot;timeout must be an integer of value 1 or greater.&quot;</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../../../scribe_data/wikidata/check_query/check.html#scribe_data.wikidata.check_query.check.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The main function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        argv (default=None)</span>
+<span class="sd">            If set to None then argparse will use sys.argv as the arguments.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">        int : the exit status - 0 - success; any other value - failure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cli</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;run SPARQL queries from the &#39;</span><span class="si">{</span><span class="n">PROJECT_ROOT</span><span class="si">}</span><span class="s2">&#39; project&quot;</span><span class="p">,</span>
+        <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentDefaultsHelpFormatter</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">group</span> <span class="o">=</span> <span class="n">cli</span><span class="o">.</span><span class="n">add_mutually_exclusive_group</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-c&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--changed&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;run only changed/new SPARQL queries&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;--all&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;run all SPARQL queries&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-f&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--file&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;path to a file containing a valid SPARQL query&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">check_sparql_file</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-p&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--ping&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;check responsiveness of endpoint&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">cli</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--timeout&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">check_timeout</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;maximum number of seconds to wait for a response from the endpoint when &#39;pinging&#39;&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">cli</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-e&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--endpoint&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;https://query.wikidata.org/sparql&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;URL of the SPARQL endpoint&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">cli</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-l&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--limit&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">check_limit</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the maximum number or results a query should return&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">cli</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-v&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--verbose&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;increase output verbosity&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">cli</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">endpoint</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">ping</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ping</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">timeout</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Success: pinged &#39;</span><span class="si">{</span><span class="n">endpoint</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">EXIT_SUCCESS</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;FAILURE: unable to contact &#39;</span><span class="si">{</span><span class="n">endpoint</span><span class="si">}</span><span class="s2">&#39;. Network problems? &quot;</span>
+            <span class="s2">&quot;Malformed URL? Increase timeout?&quot;</span><span class="p">,</span>
+            <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">EXIT_FAILURE</span>
+
+    <span class="n">queries</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">all</span><span class="p">:</span>
+        <span class="n">queries</span> <span class="o">=</span> <span class="n">all_queries</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">changed</span><span class="p">:</span>
+        <span class="n">queries</span> <span class="o">=</span> <span class="n">changed_queries</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">:</span>
+        <span class="n">queries</span> <span class="o">=</span> <span class="p">[</span><span class="n">QueryFile</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Unknown option&quot;</span>
+
+    <span class="k">if</span> <span class="n">queries</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">EXIT_FAILURE</span>
+
+    <span class="n">context</span> <span class="o">=</span> <span class="n">sparql_context</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
+
+    <span class="n">failures</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">successes</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">query</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+            <span class="n">successes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">query</span><span class="p">,</span> <span class="n">results</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">QueryExecutionException</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">failures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+    <span class="n">success_report</span><span class="p">(</span><span class="n">successes</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="n">error_report</span><span class="p">(</span><span class="n">failures</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Summary&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Queries run: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span><span class="si">}</span><span class="s2">, passed: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">successes</span><span class="p">)</span><span class="si">}</span><span class="s2">, failed: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">failures</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">EXIT_FAILURE</span> <span class="k">if</span> <span class="n">failures</span> <span class="k">else</span> <span class="n">EXIT_SUCCESS</span></div>
+
+
+
+<div class="viewcode-block" id="error_report">
+<a class="viewcode-back" href="../../../../scribe_data/wikidata/check_query/check.html#scribe_data.wikidata.check_query.check.error_report">[docs]</a>
+<span class="k">def</span> <span class="nf">error_report</span><span class="p">(</span><span class="n">failures</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QueryExecutionException</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Report failed queries.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        failures (list[QueryExecutionException]) : failed queries.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">failures</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">qword</span> <span class="o">=</span> <span class="s2">&quot;query&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">failures</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;queries&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Following </span><span class="si">{</span><span class="n">qword</span><span class="si">}</span><span class="s2"> failed:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">failed_query</span> <span class="ow">in</span> <span class="n">failures</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">failed_query</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="success_report">
+<a class="viewcode-back" href="../../../../scribe_data/wikidata/check_query/check.html#scribe_data.wikidata.check_query.check.success_report">[docs]</a>
+<span class="k">def</span> <span class="nf">success_report</span><span class="p">(</span><span class="n">successes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">QueryFile</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]],</span> <span class="n">display</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Report successful queries.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        successes : list[tuple[QueryFile, dict]]</span>
+<span class="sd">            Successful queries.</span>
+
+<span class="sd">        display : bool</span>
+<span class="sd">            Whether there should be an output or not.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">display</span> <span class="ow">and</span> <span class="n">successes</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">qword</span> <span class="o">=</span> <span class="s2">&quot;query&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">successes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;queries&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Following </span><span class="si">{</span><span class="n">qword</span><span class="si">}</span><span class="s2"> ran successfully:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">query</span><span class="p">,</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">successes</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2"> returned: </span><span class="si">{</span><span class="n">results</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Scribe-Data developers (GPL 3.0 License).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

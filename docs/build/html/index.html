@@ -1,0 +1,175 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; Scribe-Data 3.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=18e5adab" />
+
+  
+    <link rel="shortcut icon" href="_static/ScribeFavicon.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=3eb8911e"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Scribe-Data" href="scribe_data/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#">
+            
+              <img src="_static/ScribeDataLogo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="scribe_data/index.html">Scribe-Data</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes.html">Contributing to Scribe-Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes.html#license">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Scribe-Data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <a class="reference external image-reference" href="https://github.com/scribe-org/Scribe-Data"><img alt="https://raw.githubusercontent.com/scribe-org/Scribe-Data/main/.github/resources/images/ScribeDataLogo.png" class="align-center" src="https://raw.githubusercontent.com/scribe-org/Scribe-Data/main/.github/resources/images/ScribeDataLogo.png" style="height: 150px;" />
+</a>
+<p><a class="reference external" href="https://github.com/scribe-org/Scribe-Data"><img alt="platform" src="https://img.shields.io/badge/Wikidata-990000.svg?logo=wikidata&amp;logoColor=ffffff" /></a> <a class="reference external" href="http://scribe-data.readthedocs.io/en/latest/"><img alt="rtd" src="https://img.shields.io/readthedocs/scribe-data.svg?label=%20&amp;logo=read-the-docs&amp;logoColor=ffffff" /></a> <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/issues"><img alt="issues" src="https://img.shields.io/github/issues/scribe-org/Scribe-Data?label=%20&amp;logo=github" /></a> <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/blob/main/CONTRIBUTING.md"><img alt="language" src="https://img.shields.io/badge/Python%203-306998.svg?logo=python&amp;logoColor=ffffff" /></a> <a class="reference external" href="https://pypi.org/project/scribe-data/"><img alt="pypi" src="https://img.shields.io/pypi/v/scribe-data.svg?label=%20&amp;color=4B8BBE" /></a> <a class="reference external" href="https://pypi.org/project/scribe-data/"><img alt="pypistatus" src="https://img.shields.io/pypi/status/scribe-data.svg?label=%20" /></a> <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/blob/main/LICENSE.txt"><img alt="license" src="https://img.shields.io/github/license/scribe-org/Scribe-Data.svg?label=%20" /></a> <a class="reference external" href="https://github.com/scribe-org/Scribe-Data/blob/main/.github/CODE_OF_CONDUCT.md"><img alt="coc" src="https://img.shields.io/badge/Contributor%20Covenant-ff69b4.svg" /></a> <a class="reference external" href="https://wikis.world/&#64;scribe"><img alt="mastodon" src="https://img.shields.io/badge/Mastodon-6364FF.svg?logo=mastodon&amp;logoColor=ffffff" /></a> <a class="reference external" href="https://matrix.to/#/#scribe_community:matrix.org"><img alt="matrix" src="https://img.shields.io/badge/Matrix-000000.svg?logo=matrix&amp;logoColor=ffffff" /></a></p>
+<p><strong>Wikidata, Wiktionary and Wikipedia language data extraction</strong></p>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<p>Scribe-Data can be installed via <a class="reference external" href="https://pypi.org/project/scribe-data/">pip</a>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>scribe-data
+</pre></div>
+</div>
+<p>The latest development version can further be installed the <a class="reference external" href="https://github.com/scribe-org/Scribe-Data">source code on GitHub</a>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/scribe-org/Scribe-Data.git
+<span class="nb">cd</span><span class="w"> </span>Scribe-Data
+python<span class="w"> </span>setup.py<span class="w"> </span>install
+</pre></div>
+</div>
+<p>Then execute the following import statement to use Scribe-Data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scribe_data</span>
+</pre></div>
+</div>
+</section>
+<section id="contents">
+<h1>Contents<a class="headerlink" href="#contents" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="scribe_data/index.html">Scribe-Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scribe_data/load/index.html">load/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scribe_data/unicode/index.html">unicode/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scribe_data/wikidata/index.html">wikidata/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scribe_data/wikipedia/index.html">wikipedia/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scribe_data/wiktionary/index.html">wiktionary/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scribe_data/cli.html">cli/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scribe_data/utils.html">utils.py</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes.html">Contributing to Scribe-Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notes.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes.html#first-steps-as-a-contributor">First steps as a contributor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes.html#learning-the-tech-stack">Learning the tech stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes.html#development-environment">Development environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes.html#issues-and-projects">Issues and projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes.html#bug-reports">Bug reports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes.html#feature-requests">Feature requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes.html#pull-requests">Pull requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes.html#data-edits">Data edits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes.html#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notes.html#license">License</a></li>
+</ul>
+</div>
+</section>
+<section id="project-indices">
+<h1>Project Indices<a class="headerlink" href="#project-indices" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scribe_data/index.html" class="btn btn-neutral float-right" title="Scribe-Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Scribe-Data developers (GPL 3.0 License).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
