@@ -6,7 +6,7 @@ iris = datasets.load_iris()
 X = iris['data']
 y = iris['target']
 
-logit = LogisticRegression(max_iter = 10000)
+logit = LogisticRegression(max_iter=10000)
 
 print(logit.fit(X,y))
 
